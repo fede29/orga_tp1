@@ -52,15 +52,15 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 void loadBoard (char* fileName, unsigned char **board ) {
 	printf("start loading the file \n");
 	FILE* file = fopen(fileName, "r");
-	char line[2];
+	char line[4];
 
 	while (fgets(line, sizeof(line), file)) {
 		printf("reading line \n");
 		int i = line[0] - '0';
-		int j = line[0] - '0';
+		int j = line[2] - '0';
 
 		board[i][j] = '1';
-	    printf("%s", line);
+	    printf("line readed %s \n", line);
 	}
 
 	printf("end loading the file \n");

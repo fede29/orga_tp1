@@ -2,9 +2,10 @@
 #include <stdio.h>
 
 unsigned int ** init_board(unsigned int rows, unsigned int cols, FILE *file){
-	unsigned int board[rows][cols];
-	for (int i = 0; i<rows; i++){
-		for (int j = 0; j<cols; j++){
+	unsigned int** board = (unsigned int**)malloc(cols*sizeof(int*));
+	for (int i = 0; i<cols; i++){
+		board[i] = (unsigned int *) malloc(rows)
+		for (int j = 0; j<rows; j++){
 			board[i][j]=0;
 		}
 	}

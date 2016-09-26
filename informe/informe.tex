@@ -1,0 +1,94 @@
+\documentclass[11pt,a4paper]{article}
+
+%Paquetes importados
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[rgb,svgnames,table]{xcolor}
+
+\addto\captionsspanish{
+	\renewcommand\tablename{Tabla}
+	\renewcommand\listtablename{Lista de tablas}
+	\renewcommand\lstlistingname{Código}
+	\renewcommand\lstlistlistingname{Lista de código}
+}
+
+\lstset{ % Defino el formato de bloques de código fuente
+	inputencoding=utf8, % Indico la codificación de los archivos de entrada
+	extendedchars=true, % Extiendo los caracteres
+	% Escapeo caracteres especiales
+	literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1,
+	showtabs=false, % Indica si se muestran los tabs
+	tabsize=2, % Indica la cantidad de espacios que ocupa un tab
+	showspaces=false, % Indica si muestra los espacios
+	showstringspaces=false, % Indica si muestra los espacios dentro de strings
+	numbers=left, % Posición en que se muestran los números de línea
+	numberstyle=\tiny\color{gray}, % Estilo de los números de línea
+	breaklines=true, % Se parten las líneas que exceden del ancho del documento
+	frame=single, % Formato del marco del entorno
+	backgroundcolor=\color{gray!5}, % Color de fondo
+	basicstyle=\ttfamily\footnotesize, % Estilo de base (familia, tamaño, color)
+	keywordstyle=\color{DarkBlue}, % Estilo de las palabras reservadas
+	stringstyle=\color{red}, % Estilo de los strings
+	commentstyle=\color{DarkGreen}, % Estilo de los comentarios
+	language=Octave, % Espeficica el lenguaje a usar
+	otherkeywords={std,cout} % Agrego palabras reservadas que no se resaltan
+}
+
+\begin{document}
+\title{TP Analisis de la Informacion}
+\author{Federico Rodriguez Longhi}		
+\date{\today}
+
+\begin{titlepage}
+	
+	\begin{figure}[H]
+		\raggedright
+		\includegraphics[scale=0.25]{logo_fiuba2}
+		\hfill
+		\raggedleft
+		\includegraphics[scale=0.2]{logo_uba}
+	\end{figure}
+	\rule{\textwidth}{1pt}\par % Thick horizontal line
+	\vspace{2pt}\vspace{-\baselineskip} % Whitespace between lines
+	\rule{\textwidth}{0.4pt}\par % Thin horizontal line
+	
+	\vspace{0.05\textheight} % Whitespace between the top lines and title
+	\centering % Center all text
+	{\Huge UBA FACULTAD DE INGENIERÍA}\\[0.5\baselineskip]
+	{\Large 66.20 Organización de Computadoras}\\[0.5\baselineskip]
+	{\Huge Trabajo Practico}\\[0.75\baselineskip]
+	{\Large 2$^{do}$ Cuatrimestre 2016}\\[0.5\baselineskip]
+	\vspace{0.2\textheight}
+	
+	\begin{table}[H]
+		\begin{flushleft}
+		{\Large Grupo 1}\\
+		\vspace{0.01\textheight}
+		\textbf{Integrantes:}\\
+		\vspace{0.01\textheight}
+		\begin{tabular}{l r}
+			Federico Rodriguez  & 93336\\
+			Ezequiel Dufau & 91985\\
+			Pablo Ascarza & 89711\\
+		\end{tabular}
+		\end{flushleft}
+	\end{table}
+	
+	\vspace{0.05\textheight}
+	\vspace{2pt}
+	\vfill
+	\rule{\textwidth}{1pt}\par % Thick horizontal line
+	\vspace{2pt}\vspace{-\baselineskip} % Whitespace between lines
+	\rule{\textwidth}{0.4pt}\par % Thin horizontal line
+	
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\end{document}

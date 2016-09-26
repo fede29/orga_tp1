@@ -6,9 +6,9 @@ int main(int argc, char* argv[])
     char const* const fileName = argv[4]; /* should check that argc > 1 */
     FILE* file = fopen(fileName, "r"); /* should check the result */
     char line[256];
-    unsigned int rows = argv[2];
-    unsigned int cols = argv[3];
-    unsigned int actionsCount = argv[1];
+    unsigned int rows = (int)*argv[2];
+    unsigned int cols = (int)*argv[3];
+    unsigned int actionsCount = (int)*argv[1];
     unsigned int i = 0;
     unsigned int j = 0;
     unsigned int k = 0;
@@ -86,3 +86,4 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 
 	return neighbors;
 }
+

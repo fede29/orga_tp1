@@ -1,6 +1,55 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+<<<<<<< HEAD
+int main(int argc, char* argv[])
+{
+    char const* const fileName = argv[4]; /* should check that argc > 1 */
+    FILE* file = fopen(fileName, "r"); /* should check the result */
+    char line[256];
+    unsigned int rows = (int)*argv[2];
+    unsigned int cols = (int)*argv[3];
+    unsigned int actionsCount = (int)*argv[1];
+    unsigned int i = 0;
+    unsigned int j = 0;
+    unsigned int k = 0;
+    unsigned char board[rows][cols];
+
+    while (fgets(line, sizeof(line), file)) {
+        /* note that fgets don't strip the terminating \n, checking its
+           presence would allow to handle lines longer that sizeof(line) */
+        printf("%s", line);
+    }
+    /* may check feof here to make a difference between eof and io failure -- network
+       timeout for instance */
+
+    fclose(file);
+
+    loadBoard(board, file);
+
+    for (i = 0; i <= actionsCount; i++) {
+    	for (j = 0; j <= rows; j++) {
+    		for (k = 0; k <= cols; k++) {
+    			unsigned int neighbors = vecinos (board, j, k, rows, cols);
+
+    			if (((neighbors == 2) || (neighbors == 3)) && (board[j][k] == '1')) {
+    				board[j][k] = '1';
+    			}
+    			if ((board[j][k] == '0') && (neighbors == 3)) {
+    				board[j][k] = '1';
+    			}
+    			if ((neighbors < 2) || (neighbors > 3)) {
+    				board[j][k] = '0';
+    			}
+    			printResult(board, i);
+    		}
+    	}
+    }
+
+    return 0;
+}
+
+=======
 /*
 void multi_by_minus(float *matrix, int nRows, int nCols) {
   short i,j;
@@ -10,6 +59,7 @@ void multi_by_minus(float *matrix, int nRows, int nCols) {
       }
   }
 }*/
+>>>>>>> 4b6ac5948f85150e70bc2d77dd204bf7bcd94340
 
 unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned int m, unsigned int n){
 	unsigned int neighbors = 0;
@@ -49,18 +99,20 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 	return neighbors;
 }
 
+<<<<<<< HEAD
+=======
 void loadBoard (char* fileName, unsigned char **board ) {
 	printf("start loading the file \n");
 	FILE* file = fopen(fileName, "r");
-	char line[4];
+	char line[3];
 
 	while (fgets(line, sizeof(line), file)) {
 		printf("reading line \n");
 		int i = line[0] - '0';
-		int j = line[2] - '0';
+		int j = line[0] - '0';
 
 		board[i][j] = '1';
-	    printf("line readed %s \n", line);
+	    printf("%s", line);
 	}
 
 	printf("end loading the file \n");
@@ -70,16 +122,11 @@ void loadBoard (char* fileName, unsigned char **board ) {
 
 int main(int argc, char* argv[]) {
 	printf("start \n");
-	char* fileName = argv[4];
-	unsigned int rows = atoi(argv[2]);
-	unsigned int cols = atoi(argv[3]);
-	unsigned int actionsCount = atoi(argv[1]);
+	char* fileName = argv[3];
+	unsigned int rows = atoi(argv[1]);
+	unsigned int cols = atoi(argv[2]);
+	unsigned int actionsCount = atoi(argv[0]);
 	printf("end loading parameters \n");
-
-	printf("parameter 1 %i \n", actionsCount);
-	printf("parameter 2 %i \n", cols);
-	printf("parameter 3 %i \n", rows);
-	printf("parameter 4 %s \n", fileName);
 
 	printf("init the variables \n");
 	unsigned int i = 0;
@@ -114,4 +161,4 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
-
+>>>>>>> 4b6ac5948f85150e70bc2d77dd204bf7bcd94340

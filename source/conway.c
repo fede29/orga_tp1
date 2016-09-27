@@ -47,6 +47,10 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 void loadBoard (char* fileName, unsigned char *a, unsigned int rows, unsigned int cols) {
 	printf("start loading the file \n");
 	FILE* file = fopen(fileName, "r");
+	if (file==NULL){
+		fprintf(stderr, "Error while opening file\n");
+		exit(1);
+	}
 	char line[4];
 
 	while (fgets(line, 40, file) != NULL) {
@@ -92,6 +96,10 @@ void printBoard (unsigned char *a, unsigned int rows, unsigned int cols) {
 
 int main(int argc, char* argv[]) {
 	printf("start \n");
+	if (argc != 5){
+		fprintf(stderr,"Wrong number of parameters!\n");
+		exit(1);
+	}
 	char* fileName = argv[4];
 	unsigned int rows = atoi(argv[2]);
 	unsigned int cols = atoi(argv[3]);

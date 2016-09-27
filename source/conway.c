@@ -25,7 +25,8 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 		neighbors++;
 	}
 
-	if ((jMinusOne >= 0) && (a[i * n + jMinusOne] == '1')) {
+	if ((jMinusOne >= 0) && (a[i * n 
+	+ jMinusOne] == '1')) {
 		neighbors++;
 	}
 

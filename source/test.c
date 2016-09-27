@@ -3,9 +3,10 @@
 
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
-	for (int i = 0; i<cols; i++){
+	unsigned int i,j;
+	for (i = 0; i<cols; i++){
 		board[i] = (unsigned char *) malloc(rows*sizeof(char*));
-		for (int j = 0; j<rows; j++){
+		for (j = 0; j<rows; j++){
 			board[i][j]='0';
 		}
 	}
@@ -22,7 +23,8 @@ void load_board(unsigned char **board, unsigned int rows, unsigned int cols, FIL
 }
 
 int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
-	for (int i = 0; i<cols; i++){
+	unsigned int i;
+	for (i = 0; i<cols; i++){
 		free(board[i]);
 	}
 	free(board);
@@ -30,18 +32,31 @@ int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
 }
 
 void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
-	for (int i = 0; i<cols; i++){
-		for (int j = 0; j<rows; j++){
+	unsigned int i,j;
+	for (i = 0; i<cols; i++){
+		for (j = 0; j<rows; j++){
 			printf("%c",board[i][j]);
 		}
 		printf("\n");
 	}
 }
 
+unsigned char* board_to_array(unsigned char ** board, unsigned int rows, unsigned int cols){
+	unsigned char* array = (unsigned char*)malloc(sizeof(char*)*rows*cols);
+	int x,y;
+	for (x=0; x<cols; x++){
+		for (y=0; y<rows; y++){
+			array[x+(cols*y)]=board[x][y];
+		}
+	}
+	return array;
+}
+
 unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
 	unsigned int vecinos = 0;
-	for (int x = -1; x<2; x++){
-		for (int y = -1; y<2; y++){
+	unsigned int x,y;
+	for (x = -1; x<2; x++){
+		for (y = -1; y<2; y++){
 			if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
 				if ((!(i==0&&j==0)) && a[(x+i) + M*(y+j)] == '1'){
 					vecinos++;
@@ -51,11 +66,13 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 	}
 	return vecinos; 
 }
-/*
-unsigned int vecinos(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
+
+
+unsigned int vecinos_m(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
 	unsigned int vecinos = 0;
-	for (int i = -1; i<2; i++){
-		for (int j = -1; j<2; j++){
+	int i,j;
+	for (i = -1; i<2; i++){
+		for (j = -1; j<2; j++){
 			if (x+i>=0 && x+i<cols && y+j>=0 && y+j<rows){
 				if ((!(i==0&&j==0)) && board[x+i][y+j] == '1'){
 					vecinos++;
@@ -65,11 +82,12 @@ unsigned int vecinos(unsigned char **board, unsigned int x, unsigned int y, unsi
 	}
 	return vecinos;
 }
-*/
+
 
 void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, unsigned int cols){
-	for (int i = 0; i<cols; i++){
-		for (int j = 0; j<rows; j++){
+	unsigned int i,j;
+	for (i = 0; i<cols; i++){
+		for (j = 0; j<rows; j++){
 			to[i][j] = from[i][j];
 		}
 	}
@@ -79,13 +97,17 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 	printf ("starting action\n");
 	unsigned char **thisBoard = init_board(rows, cols);
 	copy_board(board,thisBoard,rows, cols);
-	for (int i = 0; i < actionCount; i++){
+	unsigned int i,x,y;
+	for (i = 0; i < actionCount; i++){
 		printf("Simulation number: %i\n\n", i);
 		unsigned char **nextBoard = init_board(rows, cols);
 		print_board(thisBoard,rows,cols);
-		for (unsigned int x = 0; x < cols; x++){
-			for (unsigned int y = 0; y < rows; y++){
-				unsigned int neighbours = vecinos(*thisBoard, x, y, rows, cols);
+		for (x = 0; x < cols; x++){
+			for (y = 0; y < rows; y++){
+				//unsigned char * array = board_to_array(thisBoard, rows, cols);
+				//unsigned int neighbours = vecinos(array, x, y, rows, cols);
+				unsigned int neighbours = vecinos_m(thisBoard,x,y,rows,cols);
+				//free(array);
 				if (thisBoard[x][y]=='1'){
 					if (neighbours == 3 || neighbours == 2){nextBoard[x][y] = '1';}
 				}else{
@@ -139,8 +161,8 @@ int main(int argc, char* argv[])
 	
 	fclose(file);
 	
-	printf("printing board\n");
-	print_board(board, rows, cols);
+	/*printf("printing board\n");
+	print_board(board, rows, cols);*/
 	
 	process_board(board, rows, cols, actionsCount);
 	

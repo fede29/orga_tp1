@@ -1,16 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*
-void multi_by_minus(float *matrix, int nRows, int nCols) {
-  short i,j;
-  for (i = 0; i < nRows; i++) {
-      for (j = 0; j < nCols; j++) {
-          matrix[i * nCols + j] *= -1;
-      }
-  }
-}*/
-
 unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned int m, unsigned int n){
 	unsigned int neighbors = 0;
 
@@ -49,23 +39,50 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 	return neighbors;
 }
 
-void loadBoard (char* fileName, unsigned char **board ) {
+void loadBoard (char* fileName, unsigned char *a, unsigned int rows, unsigned int cols) {
 	printf("start loading the file \n");
 	FILE* file = fopen(fileName, "r");
 	char line[4];
 
-	while (fgets(line, sizeof(line), file)) {
+	while (fgets(line, 40, file) != NULL) {
 		printf("reading line \n");
+		printf("line readed %s", line);
+		
 		int i = line[0] - '0';
 		int j = line[2] - '0';
+		
+		printf("line pos i  %i \n", i);
+		printf("line pos j  %i \n", j);
 
-		board[i][j] = '1';
-	    printf("line readed %s \n", line);
+		a[i * cols + j] = '1';
 	}
 
 	printf("end loading the file \n");
 
 	fclose(file);
+}
+
+void loadBlankBoard (unsigned char *a, unsigned int rows, unsigned int cols) {
+	unsigned int j = 0;
+	unsigned int k = 0;
+
+	for (j = 0; j <= rows; j++) {
+		for (k = 0; k <= cols; k++) {
+			a[j * cols + k] = '0';
+		}
+	}
+}
+
+void printBoard (unsigned char *a, unsigned int rows, unsigned int cols) {
+	unsigned int j = 0;
+	unsigned int k = 0;
+
+	for (j = 0; j <= rows; j++) {
+		for (k = 0; k <= cols; k++) {
+			printf("%c ", a[j * cols + k]);
+		}
+		printf("\n");
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -88,10 +105,17 @@ int main(int argc, char* argv[]) {
 	unsigned char board[rows][cols];
 	printf("end the init of the variables \n");
 
+	printf("start loading blank board to work \n");
+	loadBlankBoard(board, rows, cols);
+	printf("end loading blank board to work \n");
+	printBoard(board, rows, cols);
+
 	printf("start loading the board from file \n");
-	loadBoard(fileName, board);
+	loadBoard(fileName, board, rows, cols);
 	printf("end load board from file \n");
 	printf("start the action \n");
+	printBoard(board, rows, cols);
+	
 	for (i = 0; i <= actionsCount; i++) {
 		for (j = 0; j <= rows; j++) {
 			for (k = 0; k <= cols; k++) {

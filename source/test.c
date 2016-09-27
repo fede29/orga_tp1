@@ -1,6 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const char* fileName, unsigned int actionNumber)
+{
+	int i, j;
+	int actionNumberStringLenght = 1;
+	if (actionNumber >= 10){
+		actionNumberStringLenght = 2;
+	}
+	char str[actionNumberStringLenght];
+	sprintf(str, "%d", actionNumber);
+	char* newFileName[25];
+	strcat(newFileName,fileName);
+	strcat(newFileName,"_");
+	strcat(newFileName,str);
+
+	FILE *fp = fopen(newFileName, "wb"); /* b - binary mode */
+	(void) fprintf(fp, "P4\n%d %d\n", dimx, dimy);
+	for (j = 0; j < dimy; ++j){
+		for (i = 0; i < dimx; ++i)
+		{
+			//printf("board %c \n", board[i][j]);
+			unsigned char writeValue = 0;
+			if ((board[i][j]) == '1'){
+				writeValue = 1;
+				//printf("entro 1 %i \n", writeValue);
+			}
+			fprintf(fp, "%c", writeValue);
+			//(void) fwrite(&writeValue, 1, sizeof(unsigned char), fp);
+		}
+	}
+	(void) fclose(fp);
+	return;
+}
+
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
 	unsigned int i,j;
@@ -64,7 +97,7 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 			}
 		}
 	}
-	return vecinos; 
+	return vecinos;
 }
 
 
@@ -93,7 +126,7 @@ void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, uns
 	}
 }
 
-void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount){
+void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount,const char* fileName){
 	printf ("starting action\n");
 	unsigned char **thisBoard = init_board(rows, cols);
 	copy_board(board,thisBoard,rows, cols);
@@ -102,6 +135,7 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		printf("Simulation number: %i\n\n", i);
 		unsigned char **nextBoard = init_board(rows, cols);
 		print_board(thisBoard,rows,cols);
+		writePBM(thisBoard, rows, cols, fileName, i);
 		for (x = 0; x < cols; x++){
 			for (y = 0; y < rows; y++){
 				//unsigned char * array = board_to_array(thisBoard, rows, cols);
@@ -119,18 +153,19 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		free_board(nextBoard, rows, cols);
 	}
 	free_board(thisBoard, rows, cols);
-	
+
 }
 
 int main(int argc, char* argv[])
 {
 	char const *fileName;
+	char const *outputFileName;
 	unsigned int actionsCount;
 	unsigned int rows;
 	unsigned int cols;
 	unsigned char **board;
 	//asigno valores de parametros
-	if (argc != 5){
+	if (argc != 7){
 		fprintf(stderr,"Wrong number of parameters!\n");
 		exit(1);
 	}else{
@@ -138,13 +173,15 @@ int main(int argc, char* argv[])
 		actionsCount = (int) atoi(argv[1]);
 		rows = (int) atoi(argv[2]);
 		cols = (int) atoi(argv[3]);
+		outputFileName = argv[6];
 	}
-	
+
 	printf("filename: %s\n", fileName);
 	printf("count: %i\n", actionsCount);
 	printf("rows: %i\n", rows);
 	printf("cols: %i\n", cols);
-	
+	printf("outputFileName: %s\n", outputFileName);
+
 	//abro mi archivo
 	printf("Abriendo archivo\n");
 	FILE* file = fopen(fileName, "r");
@@ -155,17 +192,16 @@ int main(int argc, char* argv[])
 	
 	printf("iniciando board\n");
 	board = init_board(rows, cols);
-	
+
 	printf("loading board\n");
 	load_board(board, rows, cols, file);
-	
+
 	fclose(file);
-	
+
 	/*printf("printing board\n");
 	print_board(board, rows, cols);*/
-	
-	process_board(board, rows, cols, actionsCount);
+
+	process_board(board, rows, cols, actionsCount, outputFileName);
 	
 	free_board(board, rows, cols);
-	
 }

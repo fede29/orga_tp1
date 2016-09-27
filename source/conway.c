@@ -4,35 +4,40 @@
 unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned int m, unsigned int n){
 	unsigned int neighbors = 0;
 
-	if (((i + 1) <= m) && (a[i + 1 * n + j] == '1')) {
+	int iPlusOne = i + 1;
+	int iMinusOne = i - 1;
+	int jPlusOne = j + 1;
+	int jMinusOne = j - 1;
+
+	if ((iPlusOne <= m) && (a[(iPlusOne * n + j)] == '1')) {
+		neighbors++;
+	}
+	
+	if ((jPlusOne <= n) && (a[(i * n  + jPlusOne)] == '1')) {
 		neighbors++;
 	}
 
-	if (((j + 1) <= n) && (a[i * n  + j + 1] == '1')) {
+	if ((iPlusOne <= m) &&  (jPlusOne <= n) && (a[iPlusOne * n + jPlusOne] == '1')) {
 		neighbors++;
 	}
 
-	if (((i + 1) <= m) &&  ((j + 1) <= n) && (a[i + 1 * n + j + 1] == '1')) {
+	if ((iMinusOne >= 0) && (a[iMinusOne * n + j] == '1')) {
 		neighbors++;
 	}
 
-	if (((i - 1) >= 0) && (a[i - 1 * n + j] == '1')) {
+	if ((jMinusOne >= 0) && (a[i * n + jMinusOne] == '1')) {
 		neighbors++;
 	}
 
-	if (((j - 1) >= 0) && (a[i * n + j - 1] == '1')) {
+	if ((iMinusOne >= 0) &&  (jMinusOne >= 0) && (a[iMinusOne * n + jMinusOne] == '1')) {
 		neighbors++;
 	}
 
-	if (((i - 1) >= 0) &&  ((j - 1) >= 0) && (a[i - 1 * n + j - 1] == '1')) {
+	if ((iPlusOne <= m) &&  (jMinusOne >= 0) && (a[iPlusOne * n + jMinusOne] == '1')) {
 		neighbors++;
 	}
 
-	if (((i + 1) <= m) &&  ((j - 1) >= 0) && (a[i + 1 * n + j - 1] == '1')) {
-		neighbors++;
-	}
-
-	if (((i - 1) >= 0) &&  ((j + 1) <= n) && (a[i - 1 * n + j + 1] == '1')) {
+	if ((iMinusOne >= 0) &&  (jPlusOne <= n) && (a[iMinusOne * n + jPlusOne] == '1')) {
 		neighbors++;
 	}
 
@@ -113,10 +118,11 @@ int main(int argc, char* argv[]) {
 	printf("start loading the board from file \n");
 	loadBoard(fileName, board, rows, cols);
 	printf("end load board from file \n");
-	printf("start the action \n");
+
 	printBoard(board, rows, cols);
 	
 	for (i = 0; i <= actionsCount; i++) {
+		printf("start the action %i \n", i);
 		for (j = 0; j <= rows; j++) {
 			for (k = 0; k <= cols; k++) {
 				unsigned int neighbors = vecinos (board, j, k, rows, cols);
@@ -130,12 +136,12 @@ int main(int argc, char* argv[]) {
 				if ((neighbors < 2) || (neighbors > 3)) {
 					board[j][k] = '0';
 				}
-				//printResult(board, i);
-				printf("doing the action \n");
 			}
 		}
+		printBoard(board, rows, cols);
+		printf("end the action %i \n", i);
 	}
-
+	
 	return 0;
 }
 

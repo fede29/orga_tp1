@@ -17,27 +17,27 @@ unsigned int vecinos (unsigned char *a, unsigned int i, unsigned int j, unsigned
 		neighbors++;
 	}
 
-	if ((iPlusOne <= m) &&  (jPlusOne <= n) && (a[iPlusOne * n + jPlusOne] == '1')) {
+	if ((iPlusOne <= m) &&  (jPlusOne <= n) && (a[(iPlusOne * n + jPlusOne)] == '1')) {
 		neighbors++;
 	}
 
-	if ((iMinusOne >= 0) && (a[iMinusOne * n + j] == '1')) {
+	if ((iMinusOne >= 0) && (a[(iMinusOne * n + j)] == '1')) {
 		neighbors++;
 	}
 
-	if ((jMinusOne >= 0) && (a[i * n + jMinusOne] == '1')) {
+	if ((jMinusOne >= 0) && (a[(i * n + jMinusOne)] == '1')) {
 		neighbors++;
 	}
 
-	if ((iMinusOne >= 0) &&  (jMinusOne >= 0) && (a[iMinusOne * n + jMinusOne] == '1')) {
+	if ((iMinusOne >= 0) &&  (jMinusOne >= 0) && (a[(iMinusOne * n + jMinusOne)] == '1')) {
 		neighbors++;
 	}
 
-	if ((iPlusOne <= m) &&  (jMinusOne >= 0) && (a[iPlusOne * n + jMinusOne] == '1')) {
+	if ((iPlusOne <= m) &&  (jMinusOne >= 0) && (a[(iPlusOne * n + jMinusOne)] == '1')) {
 		neighbors++;
 	}
 
-	if ((iMinusOne >= 0) &&  (jPlusOne <= n) && (a[iMinusOne * n + jPlusOne] == '1')) {
+	if ((iMinusOne >= 0) &&  (jPlusOne <= n) && (a[(iMinusOne * n + jPlusOne)] == '1')) {
 		neighbors++;
 	}
 
@@ -49,7 +49,7 @@ void loadBoard (char* fileName, unsigned char *a, unsigned int rows, unsigned in
 	FILE* file = fopen(fileName, "r");
 	char line[4];
 
-	while (fgets(line, 40, file) != NULL) {
+	while (fgets(line, 5, file) != NULL) {
 		printf("reading line \n");
 		printf("line readed %s", line);
 		
@@ -58,6 +58,9 @@ void loadBoard (char* fileName, unsigned char *a, unsigned int rows, unsigned in
 		
 		printf("line pos i  %i \n", i);
 		printf("line pos j  %i \n", j);
+
+		i--;
+		j--;
 
 		a[i * cols + j] = '1';
 	}
@@ -108,10 +111,12 @@ int main(int argc, char* argv[]) {
 	unsigned int j = 0;
 	unsigned int k = 0;
 	unsigned char board[rows][cols];
+	unsigned char auxBoard[rows][cols];
 	printf("end the init of the variables \n");
 
 	printf("start loading blank board to work \n");
 	loadBlankBoard(board, rows, cols);
+	loadBlankBoard(auxBoard, rows, cols);
 	printf("end loading blank board to work \n");
 	printBoard(board, rows, cols);
 
@@ -128,16 +133,17 @@ int main(int argc, char* argv[]) {
 				unsigned int neighbors = vecinos (board, j, k, rows, cols);
 
 				if (((neighbors == 2) || (neighbors == 3)) && (board[j][k] == '1')) {
-					board[j][k] = '1';
+					auxBoard[j][k] = '1';
 				}
 				if ((board[j][k] == '0') && (neighbors == 3)) {
-					board[j][k] = '1';
+					auxBoard[j][k] = '1';
 				}
 				if ((neighbors < 2) || (neighbors > 3)) {
-					board[j][k] = '0';
+					auxBoard[j][k] = '0';
 				}
 			}
 		}
+		strcpy(board, auxBoard);
 		printBoard(board, rows, cols);
 		printf("end the action %i \n", i);
 	}

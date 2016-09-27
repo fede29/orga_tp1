@@ -21,6 +21,14 @@ void load_board(unsigned char **board, unsigned int rows, unsigned int cols, FIL
 	}
 }
 
+int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
+	for (int i = 0; i<cols; i++){
+		free(board[i]);
+	}
+	free(board);
+	return 0;
+}
+
 void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	for (int i = 0; i<cols; i++){
 		for (int j = 0; j<rows; j++){
@@ -30,12 +38,12 @@ void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	}
 }
 
-unsigned int vecinos_posta(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
+unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
 	unsigned int vecinos = 0;
 	for (int x = -1; x<2; x++){
 		for (int y = -1; y<2; y++){
 			if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
-				if ((!(i==0&&j==0)) && board[(x+i) + M*(y+j)] == '1'){
+				if ((!(i==0&&j==0)) && a[(x+i) + M*(y+j)] == '1'){
 					vecinos++;
 				}
 			}
@@ -43,7 +51,7 @@ unsigned int vecinos_posta(unsigned char *a, unsigned int i, unsigned int j, uns
 	}
 	return vecinos; 
 }
-
+/*
 unsigned int vecinos(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
 	unsigned int vecinos = 0;
 	for (int i = -1; i<2; i++){
@@ -57,7 +65,8 @@ unsigned int vecinos(unsigned char **board, unsigned int x, unsigned int y, unsi
 	}
 	return vecinos;
 }
-	
+*/
+
 void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, unsigned int cols){
 	for (int i = 0; i<cols; i++){
 		for (int j = 0; j<rows; j++){
@@ -76,7 +85,7 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		print_board(thisBoard,rows,cols);
 		for (unsigned int x = 0; x < cols; x++){
 			for (unsigned int y = 0; y < rows; y++){
-				unsigned int neighbours = vecinos(thisBoard, x, y, rows, cols);
+				unsigned int neighbours = vecinos(*thisBoard, x, y, rows, cols);
 				if (thisBoard[x][y]=='1'){
 					if (neighbours == 3 || neighbours == 2){nextBoard[x][y] = '1';}
 				}else{
@@ -85,18 +94,10 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 			}
 		}
 		copy_board(nextBoard,thisBoard,rows, cols);
-		free_board(nextBoard);
+		free_board(nextBoard, rows, cols);
 	}
-	free_board(thisBoard);
+	free_board(thisBoard, rows, cols);
 	
-}
-
-int free_board (unsigned int **board, unsigned int rows, unsigned int cols){
-	for (int i = 0; i<cols; i++){
-		free(board[i]);
-	}
-	free(board);
-	return 0;
 }
 
 int main(int argc, char* argv[])
@@ -143,6 +144,6 @@ int main(int argc, char* argv[])
 	
 	process_board(board, rows, cols, actionsCount);
 	
-	free_board(board)
+	free_board(board, rows, cols);
 	
 }

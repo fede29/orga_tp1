@@ -72,11 +72,8 @@ void loadBoard (char* fileName, unsigned char *a, unsigned int rows, unsigned in
 }
 
 void loadBlankBoard (unsigned char *a, unsigned int rows, unsigned int cols) {
-	unsigned int j = 0;
-	unsigned int k = 0;
-
-	for (j = 0; j <= rows; j++) {
-		for (k = 0; k <= cols; k++) {
+	for (int j = 0; j <= rows; j++) {
+		for (int k = 0; k <= cols; k++) {
 			a[j * cols + k] = '0';
 		}
 	}
@@ -112,9 +109,6 @@ int main(int argc, char* argv[]) {
 	printf("parameter 4 %s \n", fileName);
 
 	printf("init the variables \n");
-	unsigned int i = 0;
-	unsigned int j = 0;
-	unsigned int k = 0;
 	unsigned char board[rows][cols];
 	printf("end the init of the variables \n");
 
@@ -129,6 +123,7 @@ int main(int argc, char* argv[]) {
 
 	printBoard(board, rows, cols);
 	
+	unsigned int i,j,k;
 	for (i = 0; i <= actionsCount; i++) {
 		printf("start the action %i \n", i);
 		for (j = 0; j <= rows; j++) {

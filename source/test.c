@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/*
+
 void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const char* fileName, unsigned int actionNumber)
 {
 	int i, j;
@@ -11,7 +11,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	}
 	char str[actionNumberStringLenght];
 	sprintf(str, "%d", actionNumber);
-	char* newFileName[25];
+	char newFileName[25];
 	strcat(newFileName,fileName);
 	strcat(newFileName,"_");
 	strcat(newFileName,str);
@@ -33,7 +33,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	}
 	(void) fclose(fp);
 	return;
-}*/
+}
 
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
@@ -141,7 +141,7 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		printf("Simulation number: %i\n\n", i);
 		unsigned char **nextBoard = init_board(rows, cols);
 		print_board(thisBoard,rows,cols);
-		//writePBM(thisBoard, rows, cols, fileName, i);
+		writePBM(thisBoard, rows, cols, fileName, i);
 		for (x = 0; x < cols; x++){
 			for (y = 0; y < rows; y++){
 				//unsigned char * array = board_to_array(thisBoard, rows, cols);

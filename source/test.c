@@ -69,7 +69,12 @@ void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	unsigned int i,j;
 	for (i = 0; i<cols; i++){
 		for (j = 0; j<rows; j++){
-			printf("%c",board[i][j]);
+			//printf("%c",board[i][j]);
+			if (board[i][j] == '0'){
+				printf("·");
+			}else{
+				printf("O");
+			}
 		}
 		printf("\n");
 	}

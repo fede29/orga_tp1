@@ -12,6 +12,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	char str[actionNumberStringLenght];
 	sprintf(str, "%d", actionNumber);
 	char newFileName[25];
+	newFileName[0]='\0';
 	strcat(newFileName,fileName);
 	strcat(newFileName,"_");
 	strcat(newFileName,str);

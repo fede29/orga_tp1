@@ -198,10 +198,10 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 		else{
-			fprintf(stderr,"Parametro no valido!\n");
+			fprintf(stderr,"Invalid parameter!\n");
 			exit(1);
 		}
-	}else if (argc != 7){
+	}else if (argc != 5 && argc != 7){ //ver
 		fprintf(stderr,"Wrong number of parameters!\n");
 		exit(1);
 	}else{
@@ -209,8 +209,18 @@ int main(int argc, char* argv[])
 		actionsCount = (int) atoi(argv[1]);
 		rows = (int) atoi(argv[2]);
 		cols = (int) atoi(argv[3]);
-		outputFileName = argv[6];
+		outputFileName = fileName;
+		if (argc == 7){
+			if (strcmp(argv[5],"-o") == 0){
+				outputFileName = argv[6];
+			}else{
+				fprintf(stderr,"Invalid parameter!\n");
+				exit(1);
+			}
+		}
 	}
+	
+	
 
 	printf("filename: %s\n", fileName);
 	printf("count: %i\n", actionsCount);

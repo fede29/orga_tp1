@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
+/*
 void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const char* fileName, unsigned int actionNumber)
 {
 	int i, j;
@@ -15,7 +16,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	strcat(newFileName,"_");
 	strcat(newFileName,str);
 
-	FILE *fp = fopen(newFileName, "wb"); /* b - binary mode */
+	FILE *fp = fopen(newFileName, "wb");
 	(void) fprintf(fp, "P4\n%d %d\n", dimx, dimy);
 	for (j = 0; j < dimy; ++j){
 		for (i = 0; i < dimx; ++i)
@@ -32,7 +33,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	}
 	(void) fclose(fp);
 	return;
-}
+}*/
 
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
@@ -135,7 +136,7 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		printf("Simulation number: %i\n\n", i);
 		unsigned char **nextBoard = init_board(rows, cols);
 		print_board(thisBoard,rows,cols);
-		writePBM(thisBoard, rows, cols, fileName, i);
+		//writePBM(thisBoard, rows, cols, fileName, i);
 		for (x = 0; x < cols; x++){
 			for (y = 0; y < rows; y++){
 				//unsigned char * array = board_to_array(thisBoard, rows, cols);
@@ -156,6 +157,23 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 
 }
 
+void print_help(){
+	printf("Uso:\n");
+	printf("  conway -h\n  conway -V\n  conway i M N inputfile [-o outputprefix]\n");
+	printf("Opciones:\n");
+	printf("  -h, --help    Imprime este mensaje\n");
+	printf("  -V, --version Da la version del programa\n");
+	printf("  -o            Prefijo de los archivos de salida\n");
+	printf("Ejemplos: \n");
+	printf("  conway 10 20 20 glider -o estado\n");
+	printf("  Representa 10 iteraciones del Juego de la Vida en una Matriz\n");
+	printf("  de 20x20, con un estado inicial tomado del archivo ''glider''.\n");
+	printf("  Los archivos de salida se llamarán estado_n.pbm,\n");
+	printf("  si no se da un prefijo para el archivo de salida, \n");
+	printf("  el prefijo será el nombre del archivo de entrada.\n");
+}
+	
+
 int main(int argc, char* argv[])
 {
 	char const *fileName;
@@ -165,7 +183,13 @@ int main(int argc, char* argv[])
 	unsigned int cols;
 	unsigned char **board;
 	//asigno valores de parametros
-	if (argc != 7){
+	if (argc == 2){
+		char* arg = argv[1];
+		if (strcmp(arg,"-h") == 0){
+			print_help();
+			return 0;
+		}
+	}else if (argc != 7){
 		fprintf(stderr,"Wrong number of parameters!\n");
 		exit(1);
 	}else{
@@ -204,4 +228,6 @@ int main(int argc, char* argv[])
 	process_board(board, rows, cols, actionsCount, outputFileName);
 	
 	free_board(board, rows, cols);
+	
+	return 0;
 }

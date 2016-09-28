@@ -172,6 +172,10 @@ void print_help(){
 	printf("  si no se da un prefijo para el archivo de salida, \n");
 	printf("  el prefijo será el nombre del archivo de entrada.\n");
 }
+
+void print_version (){
+	printf("Conway -Game of Life- version: 1.0\n");
+}
 	
 
 int main(int argc, char* argv[])
@@ -185,9 +189,17 @@ int main(int argc, char* argv[])
 	//asigno valores de parametros
 	if (argc == 2){
 		char* arg = argv[1];
-		if (strcmp(arg,"-h") == 0){
+		if (strcmp(arg,"-h") == 0 || strcmp(arg,"--help") == 0){
 			print_help();
 			return 0;
+		}
+		else if (strcmp(arg,"-v") == 0 || strcmp(arg,"--version") == 0){
+			print_version();
+			return 0;
+		}
+		else{
+			fprintf(stderr,"Parametro no valido!\n");
+			exit(1);
 		}
 	}else if (argc != 7){
 		fprintf(stderr,"Wrong number of parameters!\n");

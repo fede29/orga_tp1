@@ -140,8 +140,6 @@ A continuación se detallan los errores y su significado:
 	\item \textbf{Error while opening output file: [nombre\_de\_archivo]:} No se pudo abrir el archivo de salida con el nombre \emph{nombre\_de\_archivo}
 \end{itemize}
 
-
-
 \subsection{Algunas Aclaraciones}
 \begin{itemize}
 	\item Las imágenes pbm generadas se guardan en la carpeta imágenes.
@@ -172,6 +170,45 @@ Para generar un tablero de $20 \times 30$ a partir del archivo \texttt{pento}, r
 Los archivos pbm generados por el comando anterior seran nombrados de la forma: ``jorge\_N.pbm''.
 
 \section{Implementación}
+En esta sección se presentar porciones del programa. Para ver el código completo dirigirse al apéndice A.
+
+Para la implementación se diseño una función en C según la documentación del enunciado que corresponde a:\\
+\texttt{unsigned int vecinos(unsigned char *a,\\
+	unsigned int i, unsigned int j,\\
+	unsigned int M, unsigned int N);}\\
+
+Tenemos que considerar un detalle sobre el tratamiento de la matriz para entender el algoritmo. En la figura siguiente se muestra la conversión de la matriz a array que utilizamos.
+
+\begin{equation*}
+\begin{bmatrix}
+0,0 & 0,1 & 0,2 \\
+1,0 & 1,1 & 1,2 \\
+2,0 & 2,1 & 2,2
+\end{bmatrix}
+\rightarrow 
+\begin{bmatrix}
+\underset{0}{0,0} & \underset{1}{0,1} & \underset{2}{0,2} & \underset{3}{1,0} & \underset{4}{1,1} & \underset{5}{1,2} & \underset{6}{2,0} & \underset{7}{2,1} & \underset{8}{2,2}
+\end{bmatrix}
+\end{equation*}
+
+A continuación se muestra el algoritmo implementado en C:
+
+\begin{lstlisting}[caption={Código de la funcion vecinos},label={lst:codigoc}]
+unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
+	unsigned int vecinos = 0;
+	int x,y;
+	for (x = -1; x<2; x++){
+		for (y = -1; y<2; y++){
+			if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
+				if ((!(x==0&&y==0)) && a[N*(x+i) + (y+j)] == '1'){
+					vecinos++;
+				}
+			}
+		}
+	}
+	return vecinos;
+}
+\end{lstlisting}
 
 \section{Documentación Diseño e Implementación}
 \subsection{Diagrama del Stack de Vecinos}
@@ -180,7 +217,11 @@ Los archivos pbm generados por el comando anterior seran nombrados de la forma: 
 
 \section{Conclusiones}
 
+
+\appendix
+\part*{Apéndice}
 \section{Código Fuente}
+
 
 
 \end{document}

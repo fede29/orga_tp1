@@ -25,7 +25,7 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 		exit(1);
 	}
 	
-	unsigned int amp = 16;
+	unsigned int amp = 3;
 	(void) fprintf(fp, "P4\n%d %d\n", dimy*amp, dimx*amp);
 	for (j = 0; j < dimy; ++j){
 		for (i = 0; i < dimx; ++i)
@@ -39,16 +39,15 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 			for (x = i*amp; x < amp*(i+1); x++){
 				for (y = j*amp; y < amp*(j+1); y++){
 					fprintf(fp, "%c", writeValue);
-					printf("imprimo %i \n", writeValue);
 				}
 			}
-			printf("\n");
 			//(void) fwrite(&writeValue, 1, sizeof(unsigned char), fp);
 		}
 	}
 	(void) fclose(fp);
 	return;
 }
+
 
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
@@ -62,6 +61,7 @@ unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	return board;
 }
 
+
 void load_board(unsigned char **board, unsigned int rows, unsigned int cols, FILE *file){
 	int x,y;
 	while (fscanf (file, "%i %i", &x, &y)!=EOF){
@@ -71,6 +71,7 @@ void load_board(unsigned char **board, unsigned int rows, unsigned int cols, FIL
 	}
 }
 
+
 int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
 	unsigned int i;
 	for (i = 0; i<cols; i++){
@@ -79,6 +80,7 @@ int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
 	free(board);
 	return 0;
 }
+
 
 void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	unsigned int i,j;
@@ -95,24 +97,27 @@ void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	}
 }
 
+
 unsigned char* board_to_array(unsigned char ** board, unsigned int rows, unsigned int cols){
 	unsigned char* array = (unsigned char*)malloc(sizeof(char*)*rows*cols);
 	int x,y;
 	for (x=0; x<cols; x++){
 		for (y=0; y<rows; y++){
-			array[x+(cols*y)]=board[x][y];
+			unsigned int pos = cols*x+y;
+			array[pos]=board[x][y];
 		}
 	}
 	return array;
 }
 
+
 unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
 	unsigned int vecinos = 0;
-	unsigned int x,y;
+	int x,y;
 	for (x = -1; x<2; x++){
 		for (y = -1; y<2; y++){
 			if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
-				if ((!(i==0&&j==0)) && a[(x+i) + M*(y+j)] == '1'){
+				if ((!(x==0&&y==0)) && a[N*(x+i) + (y+j)] == '1'){
 					vecinos++;
 				}
 			}
@@ -147,6 +152,7 @@ void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, uns
 	}
 }
 
+
 void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount,const char* fileName){
 	printf ("starting action\n");
 	unsigned char **thisBoard = init_board(rows, cols);
@@ -159,10 +165,11 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		writePBM(thisBoard, rows, cols, fileName, i);
 		for (x = 0; x < cols; x++){
 			for (y = 0; y < rows; y++){
-				//unsigned char * array = board_to_array(thisBoard, rows, cols);
-				//unsigned int neighbours = vecinos(array, x, y, rows, cols);
-				unsigned int neighbours = vecinos_m(thisBoard,x,y,rows,cols);
-				//free(array);
+				unsigned char * array = board_to_array(thisBoard, rows, cols);
+				unsigned int neighbours = vecinos(array, x, y, rows, cols);
+				free(array);
+				//unsigned int neighbours = vecinos_m(thisBoard,x,y,rows,cols);
+				//printf("vecinos para celda (%i,%i): %i\n", x, y, neighbours);
 				if (thisBoard[x][y]=='1'){
 					if (neighbours == 3 || neighbours == 2){nextBoard[x][y] = '1';}
 				}else{
@@ -174,8 +181,8 @@ void process_board(unsigned char **board, unsigned int rows, unsigned int cols, 
 		free_board(nextBoard, rows, cols);
 	}
 	free_board(thisBoard, rows, cols);
-
 }
+
 
 void print_help(){
 	printf("Uso:\n");
@@ -218,7 +225,6 @@ void validate_cols(int cols){
 	}
 }
 	
-
 int main(int argc, char* argv[])
 {
 	char const *fileName;

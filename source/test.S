@@ -31,40 +31,58 @@ main:
  * de la principal y de la funcion, tambien faltan algunas comparaciones
  */
 	addi regimasuno, i, 1
-	addi regjmasuno, i, 1
-	sub regimenosuno, i, regcon1
-	sub regjmenosuno, i, regcon1
-	bgtz regm, regimasuno, imasunomenorquem
+	addi regjmasuno, j, 1
+	addi regimenosuno, i, -1
+	addi regjmenosuno, j, -1
+	#sub regimenosuno, i, regcon1
+	#sub regjmenosuno, j, regcon1
+	ble regm, regimasuno, imas
 comp2:
-	bgtz regn, regjmasuno, jmasunomenorquen
+	ble regn, regjmasuno, jmas
 comp3:
-	bltz zero, regimenosuno, imenosunomenorquezero
+	bge zero, regimenosuno, imenos
 comp4:
-	bltz zero, regjmenosuno, jmenosunomenorquezero
+	bge zero, regjmenosuno, jmenos
 comp5:
-
+	bge regimasuno, regm , comp6
+	ble regn, regjmasuno, imasjmas
 comp6:
-
+	bge regimasuno, regm , comp7
+	ble zero, regjmenosuno, imasjmenos
 comp7:
-
+	blt regimenosuno, zero , comp8
+	ble regn, regjmasuno, imenosjmas
 comp8:
-
-	#falta desapilar stack 
+	blt regimenosuno, zero , fin
+	ble zero, regjmenosuno, imenosjmenos
+	#falta desapilar stack
+fin:
 	jr $ra
 
-imasunomenorquem:
+imas:
 	jal accessijpos
 	b comp2
-jmasunomenorquen:
+jmas:
 	jal accessijpos
 	b comp3
-imenosunomenorquezero:
+imenos:
 	jal accessijpos
 	b comp4
-jmenosunomenorquezero:
+jmenos:
 	jal accessijpos
 	b comp5
-
+imasjmas:
+	jal accessijpos
+	b comp6
+imasjmenos:
+	jal accessijpos
+	b comp7
+imenosjmas:
+	jal accessijpos
+	b comp8
+imenosjmenos:
+	jal accessijpos
+	b fin
 
 accessijpos:
     mul $t5, $t3, $t2       # $t5 <-- width * i

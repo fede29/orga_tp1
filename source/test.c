@@ -20,18 +20,29 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	strcat(newFileName,".pbm");
 
 	FILE *fp = fopen(newFileName, "wb");
-	(void) fprintf(fp, "P4\n%d %d\n", dimx, dimy);
-	//unsigned int amplificacion = 16;
+	if (fp==NULL){
+		fprintf(stderr, "Error while opening output file: %s\n",newFileName);
+		exit(1);
+	}
+	
+	unsigned int amp = 16;
+	(void) fprintf(fp, "P4\n%d %d\n", dimy*amp, dimx*amp);
 	for (j = 0; j < dimy; ++j){
 		for (i = 0; i < dimx; ++i)
 		{
 			//printf("board %c \n", board[i][j]);
+			unsigned int x,y;
 			unsigned char writeValue = 0;
 			if ((board[i][j]) == '1'){
 				writeValue = 1;
-				//printf("entro 1 %i \n", writeValue);
 			}
-			fprintf(fp, "%c", writeValue);
+			for (x = i*amp; x < amp*(i+1); x++){
+				for (y = j*amp; y < amp*(j+1); y++){
+					fprintf(fp, "%c", writeValue);
+					printf("imprimo %i \n", writeValue);
+				}
+			}
+			printf("\n");
 			//(void) fwrite(&writeValue, 1, sizeof(unsigned char), fp);
 		}
 	}
@@ -262,7 +273,7 @@ int main(int argc, char* argv[])
 	printf("Abriendo archivo\n");
 	FILE* file = fopen(fileName, "r");
 	if (file==NULL){
-		fprintf(stderr, "Error while opening file\n");
+		fprintf(stderr, "Error while opening input file\n");
 		exit(1);
 	}
 	

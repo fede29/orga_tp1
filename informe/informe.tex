@@ -128,6 +128,20 @@ En las siguientes secciones se detallarán los diferentes aspectos para la ejecu
 	\item \texttt{-h} o \texttt{--help} muestra la ayuda.
 \end{itemize}
 
+\subsection{Documentación de Errores}
+A continuación se detallan los errores y su significado:
+\begin{itemize}
+	\item \textbf{Actions Count must be a positive integer:} El primer parámetro tiene que ser un entero positivo.
+	\item \textbf{Number of rows must be a positive integer:} El número de filas tiene que ser un entero positivo.
+	\item \textbf{Number of columns must be a positive integer:}El número de columnas tiene que ser un entero positivo.
+	\item \textbf{Invalid parameter:} Para el caso de \texttt{-V}, \texttt{-h} y \texttt{-o}. El parámetro no coincide con estos valores (o sus equivalentes).
+	\item \textbf{Wrong number of parameters:} Hay parámetros de mas o de menos (se pasó un número de parámetros distinto a 1 o 6).
+	\item \textbf{Error while opening input file:} No se pudo abrir el archivo de entrada.
+	\item \textbf{Error while opening output file: [nombre\_de\_archivo]:} No se pudo abrir el archivo de salida con el nombre \emph{nombre\_de\_archivo}
+\end{itemize}
+
+
+
 \subsection{Algunas Aclaraciones}
 \begin{itemize}
 	\item Las imágenes pbm generadas se guardan en la carpeta imágenes.
@@ -167,8 +181,6 @@ Los archivos pbm generados por el comando anterior seran nombrados de la forma: 
 \section{Conclusiones}
 
 \section{Código Fuente}
-
-
 
 
 \end{document}

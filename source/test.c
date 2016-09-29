@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const char* fileName, unsigned int actionNumber)
 {
@@ -25,12 +26,11 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 		exit(1);
 	}
 	
-	unsigned int amp = 3;
+	unsigned int amp = 1;
 	(void) fprintf(fp, "P4\n%d %d\n", dimy*amp, dimx*amp);
 	for (j = 0; j < dimy; ++j){
 		for (i = 0; i < dimx; ++i)
 		{
-			//printf("board %c \n", board[i][j]);
 			unsigned int x,y;
 			unsigned char writeValue = 0;
 			if ((board[i][j]) == '1'){
@@ -41,7 +41,6 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 					fprintf(fp, "%c", writeValue);
 				}
 			}
-			//(void) fwrite(&writeValue, 1, sizeof(unsigned char), fp);
 		}
 	}
 	(void) fclose(fp);
@@ -86,15 +85,46 @@ void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 	unsigned int i,j;
 	for (i = 0; i<cols; i++){
 		for (j = 0; j<rows; j++){
-			//printf("%c",board[i][j]);
 			if (board[i][j] == '0'){
-				printf("·");
+				printf(".");
 			}else{
 				printf("O");
 			}
 		}
 		printf("\n");
 	}
+}
+
+void print_board_file(unsigned char **board, unsigned int rows, unsigned int cols,int n,const char *filename){
+	char newFilename [50];
+	int numLength = 1;
+	if (n >= 10 && n <= 99){
+		numLength = 2;
+	}else if (n >= 100 && n <= 999){
+		numLength = 3;
+	}
+	char str[numLength];
+	sprintf(str, "%d", n);
+	newFilename[0] = '\0';
+	strcat(newFilename, "output/");
+	strcat(newFilename, filename);
+	strcat(newFilename, "_");
+	strcat(newFilename, str);
+	FILE *file = fopen(newFilename,"w+");
+	fprintf(file, "Simulacion N°: %i\n",n);
+	unsigned int i,j;
+	for (i = 0; i<cols; i++){
+		for (j = 0; j<rows; j++){
+			//printf("%c",board[i][j]);
+			if (board[i][j] == '0'){
+				fprintf(file,"·");
+			}else{
+				fprintf(file,"O");
+			}
+		}
+		fprintf(file,"\n");
+	}
+	fclose(file);
 }
 
 
@@ -153,23 +183,26 @@ void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, uns
 }
 
 
-void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount,const char* fileName){
+void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount,const char* fileName,bool screen){
 	printf ("starting action\n");
 	unsigned char **thisBoard = init_board(rows, cols);
 	copy_board(board,thisBoard,rows, cols);
 	unsigned int i,x,y;
 	for (i = 0; i < actionCount; i++){
-		printf("Simulation number: %i\n\n", i);
 		unsigned char **nextBoard = init_board(rows, cols);
-		print_board(thisBoard,rows,cols);
-		writePBM(thisBoard, rows, cols, fileName, i);
+		if (screen){
+			printf("Simulation number: %i\n\n", i);
+			print_board(thisBoard,rows,cols);
+			print_board_file(thisBoard,rows,cols,i,fileName);
+		}else{
+			writePBM(thisBoard, rows, cols, fileName, i);
+		}
 		for (x = 0; x < cols; x++){
 			for (y = 0; y < rows; y++){
 				unsigned char * array = board_to_array(thisBoard, rows, cols);
 				unsigned int neighbours = vecinos(array, x, y, rows, cols);
 				free(array);
 				//unsigned int neighbours = vecinos_m(thisBoard,x,y,rows,cols);
-				//printf("vecinos para celda (%i,%i): %i\n", x, y, neighbours);
 				if (thisBoard[x][y]=='1'){
 					if (neighbours == 3 || neighbours == 2){nextBoard[x][y] = '1';}
 				}else{
@@ -200,9 +233,11 @@ void print_help(){
 	printf("  el prefijo será el nombre del archivo de entrada.\n");
 }
 
+
 void print_version (){
 	printf("Conway -Game of Life- version: 1.0\n");
 }
+
 	
 void validate_actionsCount(int actionsCount){
 	if (actionsCount <= 0){
@@ -211,12 +246,14 @@ void validate_actionsCount(int actionsCount){
 	}
 }
 
+
 void validate_rows(int rows){
 	if (rows <= 0){
 		fprintf(stderr, "Number of rows must be a positive integer!\n");
 		exit(1);
 	}
 }
+
 	
 void validate_cols(int cols){
 	if (cols <= 0){
@@ -224,6 +261,7 @@ void validate_cols(int cols){
 		exit(1);
 	}
 }
+
 	
 int main(int argc, char* argv[])
 {
@@ -233,6 +271,7 @@ int main(int argc, char* argv[])
 	unsigned int rows;
 	unsigned int cols;
 	unsigned char **board;
+	bool screen = 0;
 	//asigno valores de parametros
 	if (argc == 2){
 		char* arg = argv[1];
@@ -248,7 +287,7 @@ int main(int argc, char* argv[])
 			fprintf(stderr,"Invalid parameter!\n");
 			exit(1);
 		}
-	}else if (argc != 5 && argc != 7){ //ver
+	}else if (argc != 5 && argc != 7 && argc != 6){ //ver
 		fprintf(stderr,"Wrong number of parameters!\n");
 		exit(1);
 	}else{
@@ -268,34 +307,29 @@ int main(int argc, char* argv[])
 				exit(1);
 			}
 		}
+		if (argc == 6){
+			if (strcmp(argv[5],"-s") == 0){
+				screen = 1;
+			}else{
+				fprintf(stderr,"Invalid parameter!\n");
+				exit(1);
+			}
+		}
+			
 	}
-	printf("filename: %s\n", fileName);
-	printf("count: %i\n", actionsCount);
-	printf("rows: %i\n", rows);
-	printf("cols: %i\n", cols);
-	printf("outputFileName: %s\n", outputFileName);
 
 	//abro mi archivo
-	printf("Abriendo archivo\n");
+	//printf("Abriendo archivo\n");
 	FILE* file = fopen(fileName, "r");
 	if (file==NULL){
 		fprintf(stderr, "Error while opening input file\n");
 		exit(1);
 	}
 	
-	printf("iniciando board\n");
 	board = init_board(rows, cols);
-
-	printf("loading board\n");
 	load_board(board, rows, cols, file);
-
 	fclose(file);
-
-	/*printf("printing board\n");
-	print_board(board, rows, cols);*/
-
-	process_board(board, rows, cols, actionsCount, outputFileName);
-	
+	process_board(board, rows, cols, actionsCount, outputFileName, screen);
 	free_board(board, rows, cols);
 	
 	return 0;

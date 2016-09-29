@@ -73,8 +73,11 @@
 		\vspace{0.01\textheight}
 		\begin{tabular}{l r}
 			Federico Rodriguez  & 93336\\
+			\hspace{0.05\textwidth}fede.longhi@hotmail.com&\\
 			Ezequiel Dufau & 91985\\
+			\hspace{0.05\textwidth}fede.longhi@hotmail.com&\\
 			Pablo Ascarza & 89711\\
+			\hspace{0.05\textwidth}fede.longhi@hotmail.com&\\
 		\end{tabular}
 		\end{flushleft}
 	\end{table}
@@ -91,7 +94,81 @@
 \tableofcontents
 \newpage
 
+\section{Enunciado}
+
 \section{Introducción}
+El presente trabajo tiene como objetivo familiarizarse con el conjunto de instrucciones \emph{MIPS-32} y el concepto de ABI. Para el cumplimiento de este objetivo se desarrolló un programa que simula el \emph{``Juego de la Vida'' de Conway} según lo detallado en el enunciado.
+
+La implementación se realizo en el lenguaje de programacion C. Además se desarrollo una porción en assembler \emph{MIPS-32} que luego será detallada.
+
+El programa fue desarrollado para correr sobre una plataforma \emph{NetBSD / MIPS-32} mediante el emulador \emph{GXEmul}.
+
+
+
+\section{Utilización}
+El programa fue implementado para que cumpliera con los requisitos pedidos por el tp.
+En las siguientes secciones se detallarán los diferentes aspectos para la ejecución del programa.
+
+\subsection{Compilación y Ejecución}
+\begin{enumerate}
+	\item Descargar el archivo fuente ``conway.c"
+	\item Compilar el archivo (por ejemplo con gcc:\\
+	\texttt{gcc -Wall -c  ``conway.c''\\
+	gcc -Wall -o ``conway'' ``conway.c''})
+	\item Ejecutar el programa con: \texttt{./conway i M N input [-o output]}
+\end{enumerate}
+
+\subsection{Documentación de Parámetros}
+\begin{itemize}
+	\item \texttt{i} es la cantidad de simulaciones que queremos realizar.
+	\item \texttt{M} y \texttt{N} especifican las dimensiones de la matriz sobre la cual queremos simular.
+	\item \texttt{input} es el nombre del archivo que contiene las coordenadas de las celdas vivas e identifica el estado inicial de la matriz.
+	\item \texttt{-o} es un parámetro opcional que especifica que se utilizará el nombre \texttt{output} como prefijo de los nombres de los archivos pbm generados. En caso de no existir este parámetro tomara como prefijo \texttt{input}.
+	\item \texttt{-V} o \texttt{--version} muestra la versión del programa.
+	\item \texttt{-h} o \texttt{--help} muestra la ayuda.
+\end{itemize}
+
+\subsection{Algunas Aclaraciones}
+\begin{itemize}
+	\item Las imágenes pbm generadas se guardan en la carpeta imágenes.
+	\item Todos los errores se imprimen directamente a \texttt{stderr}.
+	
+\end{itemize}
+
+\subsection{Ejemplos de Uso}
+
+Para ver la documentación:\\
+
+\texttt{./conway -h}\\
+
+Para ver la informacion sobre la version:\\
+
+\texttt{./conway -V}\\
+
+Para generar un tablero de $100 \times 50$ a partir del archivo \texttt{glider} y realizar 20 iteraciones:\\
+
+\texttt{./conway 20 100 50 glider}\\
+
+Los archivos pbm generados por el comando anterior seran nombrados de la forma: ``glider\_N.pbm''.\\
+
+Para generar un tablero de $20 \times 30$ a partir del archivo \texttt{pento}, realizar 10 iteraciones y que los archivos pbm generados tengan como prefijo el nombre \texttt{jorge}:\\
+
+\texttt{./conway 10 20 30 pento -o jorge}\\
+
+Los archivos pbm generados por el comando anterior seran nombrados de la forma: ``jorge\_N.pbm''.
+
+\section{Implementación}
+
+\section{Documentación Diseño e Implementación}
+\subsection{Diagrama del Stack de Vecinos}
+
+\section{Corridas de Prueba}
+
+\section{Conclusiones}
+
+\section{Código Fuente}
+
+
 
 
 \end{document}

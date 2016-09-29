@@ -11,14 +11,17 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	}
 	char str[actionNumberStringLenght];
 	sprintf(str, "%d", actionNumber);
-	char newFileName[25];
+	char newFileName[50];
 	newFileName[0]='\0';
+	strcat(newFileName,"imagenes/");
 	strcat(newFileName,fileName);
 	strcat(newFileName,"_");
 	strcat(newFileName,str);
+	strcat(newFileName,".pbm");
 
 	FILE *fp = fopen(newFileName, "wb");
 	(void) fprintf(fp, "P4\n%d %d\n", dimx, dimy);
+	//unsigned int amplificacion = 16;
 	for (j = 0; j < dimy; ++j){
 		for (i = 0; i < dimx; ++i)
 		{
@@ -183,6 +186,27 @@ void print_version (){
 	printf("Conway -Game of Life- version: 1.0\n");
 }
 	
+void validate_actionsCount(int actionsCount){
+	if (actionsCount <= 0){
+		fprintf(stderr, "Actions Count must be a positive integer!\n");
+		exit(1);
+	}
+}
+
+void validate_rows(int rows){
+	if (rows <= 0){
+		fprintf(stderr, "Number of rows must be a positive integer!\n");
+		exit(1);
+	}
+}
+	
+void validate_cols(int cols){
+	if (cols <= 0){
+		fprintf(stderr, "Number of columns must be a positive integer!\n");
+		exit(1);
+	}
+}
+	
 
 int main(int argc, char* argv[])
 {
@@ -213,8 +237,11 @@ int main(int argc, char* argv[])
 	}else{
 		fileName = argv[4];
 		actionsCount = (int) atoi(argv[1]);
+		validate_actionsCount(actionsCount);
 		rows = (int) atoi(argv[2]);
+		validate_rows(rows);
 		cols = (int) atoi(argv[3]);
+		validate_cols(cols);
 		outputFileName = fileName;
 		if (argc == 7){
 			if (strcmp(argv[5],"-o") == 0){
@@ -225,9 +252,6 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	
-	
-
 	printf("filename: %s\n", fileName);
 	printf("count: %i\n", actionsCount);
 	printf("rows: %i\n", rows);

@@ -28,94 +28,112 @@ main:
  * los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
  * la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
  * a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
- * de la principal y de la funcion, tambien faltan algunas comparaciones
+ * de la principal y de la funcion
  */
-	addi regimasuno, i, 1
-	addi regjmasuno, j, 1
-	addi regimenosuno, i, -1
-	addi regjmenosuno, j, -1
-	#sub regimenosuno, i, regcon1
-	#sub regjmenosuno, j, regcon1
-	ble regm, regimasuno, imas
+ 	move $s1, i #i
+ 	move $s2, j #j
+	addi $s3, $s1, 1 #imasuno
+	addi $s4, $s2, 1 #jmasuno
+	addi $s5, $s1, -1	#imenosuno
+	addi $s6, $s2, -1 #jmenosuno
+	move $s0, regm #m
+	move $s7, regn #n
+	move $t8, matriz #matriz
+	#sub $s5, i, regcon1
+	#sub $s6, j, regcon1
+	ble $s3, $s0, imas #compara si i + 1 <= m 
 comp2:
-	ble regn, regjmasuno, jmas
+	ble $s4, $s7, jmas #compara si j + 1 <= n 
 comp3:
-	bge zero, regimenosuno, imenos
+	bge $s5, zero, imenos #compara si i - 1 >= 0 
 comp4:
-	bge zero, regjmenosuno, jmenos
+	bge $s6, zero, jmenos #compara si j - 1 >= 0
 comp5:
-	bge regimasuno, regm , comp6
-	ble regn, regjmasuno, imasjmas
+	bge $s3, $s0 , comp6 #compara si i + 1 >= m
+	ble $s4, $s7, imasjmas #compara si j + 1 <= n
 comp6:
-	bge regimasuno, regm , comp7
-	ble zero, regjmenosuno, imasjmenos
+	bge $s3, $s0 , comp7 #compara si i + 1 >= m
+	bge $s6, zero, imasjmenos #compara si j - 1 >= 0 
 comp7:
-	blt regimenosuno, zero , comp8
-	ble regn, regjmasuno, imenosjmas
+	blt $s5, zero , comp8 #compara si i + 1 < 0
+	ble $s4, $s7 , imenosjmas #compara si j + 1 <= n 
 comp8:
-	blt regimenosuno, zero , fin
-	ble zero, regjmenosuno, imenosjmenos
+	blt $s5, zero , fin #compara si i + 1 < 0
+	ble $s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
 	jr $ra
 
 imas:
-	move $a0, $regimasuno
-	move $a1, $j
-	move $a2, $regn
+	move $a0, $s3
+	move $a1, $s2
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp2
 jmas:
-	move $a0, $i
-	move $a1, $regjmasuno
-	move $a2, $regn
+	move $a0, $s1
+	move $a1, $s4
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp3
 imenos:
-	move $a0, $regimenosuno
-	move $a1, $j
-	move $a2, $regn
+	move $a0, $s5
+	move $a1, $s2
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp4
 jmenos:
-	move $a0, $i
-	move $a1, $regimenosuno
-	move $a2, $regn
+	move $a0, $s1
+	move $a1, $s6
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp5
 imasjmas:
-	move $a0, $regjmasuno
-	move $a1, $regjmasuno
-	move $a2, $regn
+	move $a0, $s3
+	move $a1, $s4
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp6
 imasjmenos:
-	move $a0, $regjmasuno
-	move $a1, $regjmenosuno
-	move $a2, $regn
+	move $a0, $s4
+	move $a1, $s6
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp7
 imenosjmas:
-	move $a0, $regjmasuno
-	move $a1, $regjmenosuno
-	move $a2, $regn
+	move $a0, $s4
+	move $a1, $s6
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b comp8
 imenosjmenos:
-	move $a0, $regimenosuno
-	move $a1, $regjmenosuno
-	move $a2, $regn
+	move $a0, $s5
+	move $a1, $s6
+	move $a2, $s7
+	move $a3, $matriz
 	jal accessijpos
 	b fin
 
 accessijpos:
 	#reservar stack, cargar argumentos
-    mul $t5, $t3, $t2       # $t5 <-- width * i
-    add $t5, $t5, $t4       # $t5 <-- width * i + j
-    sll $t5, $t5, 2         # $t5 <-- 2^2 * (width * i + j)
-    add $t5, $t0, $t5       # $t5 <-- base address + (2^2 * (width * i + j))
-    lb $t6, $t5
-    beq $t6, $regconuno, sumaruno
+	move $t2, $a0 # pos i
+	move $t4, $a1 # pos j
+	move $t3, $a2 # n de la matriz
+	move $t0, $a3 # pos 0,0 de la matriz
+    mul $t5, $t3, $t2 # $t5 <-- width * i
+    add $t5, $t5, $t4 # $t5 <-- width * i + j
+    sll $t5, $t5, 2 # $t5 <-- 2^2 * (width * i + j)
+    add $t5, $t0, $t5 # $t5 <-- base address + (2^2 * (width * i + j))
+    lb $t6, $t5 #carga el 1 o 0 de la matriz
+    li $t7, 49 # carga '1' en t7 para comparar
+    beq $t6, $t7, sumaruno #igual suma uno
     b finaccessijpos
 finaccessijpos:
 	#falta desapilar stack 

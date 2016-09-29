@@ -16,7 +16,7 @@
  * On syscall failure, return the error code. Otherwise return 0
  */ 
 main:
-	subu	sp, sp, SS
+	subu	sp, sp, 
 	sw	$fp, FP(sp)	
 	sw	gp, GP(sp)	
 	move	$fp, sp
@@ -60,31 +60,56 @@ fin:
 	jr $ra
 
 imas:
+	move $a0, $regimasuno
+	move $a1, $j
+	move $a2, $regn
 	jal accessijpos
 	b comp2
 jmas:
+	move $a0, $i
+	move $a1, $regjmasuno
+	move $a2, $regn
 	jal accessijpos
 	b comp3
 imenos:
+	move $a0, $regimenosuno
+	move $a1, $j
+	move $a2, $regn
 	jal accessijpos
 	b comp4
 jmenos:
+	move $a0, $i
+	move $a1, $regimenosuno
+	move $a2, $regn
 	jal accessijpos
 	b comp5
 imasjmas:
+	move $a0, $regjmasuno
+	move $a1, $regjmasuno
+	move $a2, $regn
 	jal accessijpos
 	b comp6
 imasjmenos:
+	move $a0, $regjmasuno
+	move $a1, $regjmenosuno
+	move $a2, $regn
 	jal accessijpos
 	b comp7
 imenosjmas:
+	move $a0, $regjmasuno
+	move $a1, $regjmenosuno
+	move $a2, $regn
 	jal accessijpos
 	b comp8
 imenosjmenos:
+	move $a0, $regimenosuno
+	move $a1, $regjmenosuno
+	move $a2, $regn
 	jal accessijpos
 	b fin
 
 accessijpos:
+	#reservar stack, cargar argumentos
     mul $t5, $t3, $t2       # $t5 <-- width * i
     add $t5, $t5, $t4       # $t5 <-- width * i + j
     sll $t5, $t5, 2         # $t5 <-- 2^2 * (width * i + j)
@@ -98,9 +123,3 @@ finaccessijpos:
 sumaruno:
 	addi $v0, 1
 	b finaccessijpos
-
-
-
-.data
-	b: .byte
-

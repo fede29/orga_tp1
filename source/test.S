@@ -1,6 +1,13 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
 
+/*
+ * Empieza el codigo...
+ * los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
+ * la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
+ * a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
+ * de la principal y de la funcion
+ */vo
 	.text
 	.align 2
 	.globl vecinos
@@ -24,13 +31,6 @@ vecinos:
 	move	t2, a1 #cargo el 2do parametro i en t2
 	move	t3, a2 #cargo el 3er parametro j en t3
 	move	t4, a3 #cargo el 4tp parametro M en t4
-/*
- * Empieza el codigo...
- * los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
- * la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
- * a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
- * de la principal y de la funcion
- */
  	move	s1, t2 #i
  	move	s2, t3 #j
 	addi	s3, s1, 1 #imasuno
@@ -49,20 +49,20 @@ comp3:
 comp4:
 	bge	s6, zero, jmenos #compara si j - 1 >= 0
 comp5:
-	bge	s3, s0 , comp6 #compara si i + 1 >= m
+	bge	s3, s0, comp6 #compara si i + 1 >= m
 	ble	s4, s7, imasjmas #compara si j + 1 <= n
 comp6:
-	bge	s3, s0 , comp7 #compara si i + 1 >= m
+	bge	s3, s0, comp7 #compara si i + 1 >= m
 	bge	s6, zero, imasjmenos #compara si j - 1 >= 0 
 comp7:
-	blt	s5, zero , comp8 #compara si i + 1 < 0
-	ble	s4, s7 , imenosjmas #compara si j + 1 <= n 
+	blt	s5, zero, comp8 #compara si i + 1 < 0
+	ble	s4, s7, imenosjmas #compara si j + 1 <= n 
 comp8:
-	blt	s5, zero , fin #compara si i + 1 < 0
+	blt	s5, zero, fin #compara si i + 1 < 0
 	ble	s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
-	move	vo,t6
+	move	v0, t6
 	jr	ra
 	.end	vecinos
 
@@ -155,7 +155,7 @@ accessijpos:
 	mul	t5, t3, t2 # $t5 <-- width * i
 	add	t5, t5, t4 # $t5 <-- width * i + j
 	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
-	lb	t6, t5 #carga el 1 o 0 de la matriz
+	lb	t6, (t5) #carga el 1 o 0 de la matriz
 	li	t7, 49 # carga '1' en t7 para comparar
 	beq	t6, t7, sumaruno #igual suma uno
 	li	v0, 0

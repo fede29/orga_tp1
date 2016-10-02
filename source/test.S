@@ -3,9 +3,9 @@
 
 	.text
 	.align 2
-	.globl main
-	.ent main
-main:
+	.globl vecinos
+	.ent vecinos
+vecinos:
 	subu	sp, sp, 76 #creo stack
 	sw	ra,	40(sp) #guardo el ra en stack
 	sw	$fp, 36(sp)	#guardo el fp en stack
@@ -64,6 +64,7 @@ comp8:
 fin:
 	move	vo,t6
 	jr	ra
+	.end	vecinos
 
 imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a0, s3
@@ -128,27 +129,42 @@ imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
 	move	a3, t8
 	jal accessijpos
 	add t6, v0, t6
-
-	b fin
+	lw	ra, 40(sp) #empiezo a liberar stack, cargo el ra del stack
+	lw	$fp, 36(sp) #cargo el fp del stack
+	lw	gp, 32(sp) #cargo el gp del stack
+	lw	s0, 44(sp) #cargo el s0 del stack
+	lw	s1, 48(sp) #cargo el s1 del stack
+	lw	s2, 52(sp) #cargo el s2 del stack
+	lw	s3, 56(sp) #cargo el s3 del stack
+	lw	s4, 60(sp) #cargo el s4 del stack
+	lw	s5, 64(sp) #cargo el s5 del stack
+	lw	s6, 68(sp) #cargo el s6 del stack
+	lw	s7, 72(sp) #cargo el s7 del stack
+	addiu	sp, sp, 76
+	jr	ra
 
 accessijpos:
-	#reservar stack, cargar argumentos
-	move $t2, $a0 # pos i
-	move $t4, $a1 # pos j
-	move $t3, $a2 # n de la matriz
-	move $t0, $a3 # pos 0,0 de la matriz
-    mul $t5, $t3, $t2 # $t5 <-- width * i
-    add $t5, $t5, $t4 # $t5 <-- width * i + j
-    sll $t5, $t5, 2 # $t5 <-- 2^2 * (width * i + j)
-    add $t5, $t0, $t5 # $t5 <-- base address + (2^2 * (width * i + j))
-    lb $t6, $t5 #carga el 1 o 0 de la matriz
-    li $t7, 49 # carga '1' en t7 para comparar
-    beq $t6, $t7, sumaruno #igual suma uno
-    li $v0, 0
-    b finaccessijpos
-finaccessijpos:
-	#falta desapilar stack 
-	jr $ra
-sumaruno:
-	li $v0, 1
+	subu	sp, sp, 32 #creo stack
+	sw	ra,	24(sp) #guardo el ra en stack
+	sw	$fp, 20(sp)	#guardo el fp en stack
+	sw	gp, 16(sp) #guardo el gp en stack
+	move	t2, a0 # pos i
+	move	t4, a1 # pos j
+	move	t3, a2 # n de la matriz
+	move	t0, a3 # pos 0,0 de la matriz
+	mul	t5, t3, t2 # $t5 <-- width * i
+	add	t5, t5, t4 # $t5 <-- width * i + j
+	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
+	lb	t6, t5 #carga el 1 o 0 de la matriz
+	li	t7, 49 # carga '1' en t7 para comparar
+	beq	t6, t7, sumaruno #igual suma uno
+	li	v0, 0
 	b finaccessijpos
+finaccessijpos:
+	lw	ra, 24(sp) #empiezo a liberar stack, cargo el ra del stack
+	lw	$fp, 20(sp) #cargo el fp del stack
+	lw	gp, 16(sp) #cargo el gp del stack
+	jr	ra
+sumaruno:
+	li	v0, 1
+	b	finaccessijpos

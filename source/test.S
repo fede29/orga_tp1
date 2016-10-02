@@ -1,13 +1,13 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
 
-/*
- * Empieza el codigo...
- * los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
- * la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
- * a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
- * de la principal y de la funcion
- */
+######################################################################################
+# Empieza el codigo...
+# los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
+# la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
+# a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
+# de la principal y de la funcion
+######################################################################################
 	.text
 	.align 2
 	.globl vecinos

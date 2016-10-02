@@ -62,6 +62,18 @@ comp8:
 	ble	s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
+	lw	ra, 40(sp) #empiezo a liberar stack, cargo el ra del stack
+	lw	$fp, 36(sp) #cargo el fp del stack
+	lw	gp, 32(sp) #cargo el gp del stack
+	lw	s0, 44(sp) #cargo el s0 del stack
+	lw	s1, 48(sp) #cargo el s1 del stack
+	lw	s2, 52(sp) #cargo el s2 del stack
+	lw	s3, 56(sp) #cargo el s3 del stack
+	lw	s4, 60(sp) #cargo el s4 del stack
+	lw	s5, 64(sp) #cargo el s5 del stack
+	lw	s6, 68(sp) #cargo el s6 del stack
+	lw	s7, 72(sp) #cargo el s7 del stack
+	addiu	sp, sp, 76
 	move	v0, t6
 	jr	ra
 	.end	vecinos
@@ -129,19 +141,7 @@ imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
 	move	a3, t8
 	jal accessijpos
 	add t6, v0, t6
-	lw	ra, 40(sp) #empiezo a liberar stack, cargo el ra del stack
-	lw	$fp, 36(sp) #cargo el fp del stack
-	lw	gp, 32(sp) #cargo el gp del stack
-	lw	s0, 44(sp) #cargo el s0 del stack
-	lw	s1, 48(sp) #cargo el s1 del stack
-	lw	s2, 52(sp) #cargo el s2 del stack
-	lw	s3, 56(sp) #cargo el s3 del stack
-	lw	s4, 60(sp) #cargo el s4 del stack
-	lw	s5, 64(sp) #cargo el s5 del stack
-	lw	s6, 68(sp) #cargo el s6 del stack
-	lw	s7, 72(sp) #cargo el s7 del stack
-	addiu	sp, sp, 76
-	jr	ra
+	b fin
 
 accessijpos:
 	subu	sp, sp, 32 #creo stack

@@ -140,7 +140,7 @@ unsigned char* board_to_array(unsigned char ** board, unsigned int rows, unsigne
 	return array;
 }
 
-
+/*
 unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
 	unsigned int vecinos = 0;
 	int x,y;
@@ -155,7 +155,7 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 	}
 	return vecinos;
 }
-
+*/
 
 unsigned int vecinos_m(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
 	unsigned int vecinos = 0;

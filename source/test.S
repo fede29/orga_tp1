@@ -1,28 +1,29 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
 
-#define A0	SS
-#define A1	((SS) + 4)
-#define SS	8
-#define FP 	4
-#define GP	0
-
 	.text
 	.align 2
 	.globl main
 	.ent main
-/*
- * Writes on stdout what comes in through stdin. 
- * On syscall failure, return the error code. Otherwise return 0
- */ 
 main:
-	subu	sp, sp, 
-	sw	$fp, FP(sp)	
-	sw	gp, GP(sp)	
-	move	$fp, sp
-
-	sw	a0, A0 ($fp)
-	sw	a1, A1($fp)
+	subu	sp, sp, 76 #creo stack
+	sw	ra,	40(sp) #guardo el ra en stack
+	sw	$fp, 36(sp)	#guardo el fp en stack
+	sw	gp, 32(sp) #guardo el gp en stack
+	sw	s0, 44(sp) #guardo el s0 en stack
+	sw	s1, 48(sp) #guardo el s1 en stack
+	sw	s2, 52(sp) #guardo el s2 en stack
+	sw	s3, 56(sp) #guardo el s3 en stack
+	sw	s4, 60(sp) #guardo el s4 en stack
+	sw	s5, 64(sp) #guardo el s5 en stack
+	sw	s6, 68(sp) #guardo el s6 en stack
+	sw	s7, 72(sp) #guardo el s7 en stack
+	sw	t0, 16(sp) #guardo el 5to parametro N en el stack  en stack
+	move	$fp, sp #muevo el fp al inicio del stack
+	move	t1, a0 #cargo el 1er parametro a* en t1 
+	move	t2, a1 #cargo el 2do parametro i en t2
+	move	t3, a2 #cargo el 3er parametro j en t3
+	move	t4, a3 #cargo el 4tp parametro M en t4
 /*
  * Empieza el codigo...
  * los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
@@ -30,95 +31,104 @@ main:
  * a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
  * de la principal y de la funcion
  */
- 	move $s1, i #i
- 	move $s2, j #j
-	addi $s3, $s1, 1 #imasuno
-	addi $s4, $s2, 1 #jmasuno
-	addi $s5, $s1, -1	#imenosuno
-	addi $s6, $s2, -1 #jmenosuno
-	move $s0, regm #m
-	move $s7, regn #n
-	move $t8, matriz #matriz
-	#sub $s5, i, regcon1
-	#sub $s6, j, regcon1
-	ble $s3, $s0, imas #compara si i + 1 <= m 
+ 	move	s1, t2 #i
+ 	move	s2, t3 #j
+	addi	s3, s1, 1 #imasuno
+	addi	s4, s2, 1 #jmasuno
+	addi	s5, s1, -1	#imenosuno
+	addi	s6, s2, -1 #jmenosuno
+	move	s0, t4 #m
+	move	s7, t0 #n
+	move	t8, t1 #matriz
+	move	t6, zero #en t6 se va a ir acumulando el valor
+	ble	s3, s0, imas #compara si i + 1 <= m 
 comp2:
-	ble $s4, $s7, jmas #compara si j + 1 <= n 
+	ble	s4, s7, jmas #compara si j + 1 <= n 
 comp3:
-	bge $s5, zero, imenos #compara si i - 1 >= 0 
+	bge	s5, zero, imenos #compara si i - 1 >= 0 
 comp4:
-	bge $s6, zero, jmenos #compara si j - 1 >= 0
+	bge	s6, zero, jmenos #compara si j - 1 >= 0
 comp5:
-	bge $s3, $s0 , comp6 #compara si i + 1 >= m
-	ble $s4, $s7, imasjmas #compara si j + 1 <= n
+	bge	s3, s0 , comp6 #compara si i + 1 >= m
+	ble	s4, s7, imasjmas #compara si j + 1 <= n
 comp6:
-	bge $s3, $s0 , comp7 #compara si i + 1 >= m
-	bge $s6, zero, imasjmenos #compara si j - 1 >= 0 
+	bge	s3, s0 , comp7 #compara si i + 1 >= m
+	bge	s6, zero, imasjmenos #compara si j - 1 >= 0 
 comp7:
-	blt $s5, zero , comp8 #compara si i + 1 < 0
-	ble $s4, $s7 , imenosjmas #compara si j + 1 <= n 
+	blt	s5, zero , comp8 #compara si i + 1 < 0
+	ble	s4, s7 , imenosjmas #compara si j + 1 <= n 
 comp8:
-	blt $s5, zero , fin #compara si i + 1 < 0
-	ble $s6, zero, imenosjmenos #compara si j + 1 >= 0 
+	blt	s5, zero , fin #compara si i + 1 < 0
+	ble	s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
-	jr $ra
+	move	vo,t6
+	jr	ra
 
-imas:
-	move $a0, $s3
-	move $a1, $s2
-	move $a2, $s7
-	move $a3, $matriz
+imas: #se llama a a[i+1][j] para ver si esta vivo o no
+	move	a0, s3
+	move	a1, s2
+	move	a2, s7
+	move	a3, t8
+	jal	accessijpos
+	add	t6, v0, t6
+	b	comp2
+jmas: #se llama a a[i][j+1] para ver si esta vivo o no
+	move	a0, s1
+	move	a1, s4
+	move	a2, s7
+	move	a3, t8
+	jal	accessijpos
+	add	t6, v0, t6
+	b	comp3
+imenos: #se llama a a[i-1][j] para ver si esta vivo o no
+	move	a0, s5
+	move	a1, s2
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
-	b comp2
-jmas:
-	move $a0, $s1
-	move $a1, $s4
-	move $a2, $s7
-	move $a3, $matriz
-	jal accessijpos
-	b comp3
-imenos:
-	move $a0, $s5
-	move $a1, $s2
-	move $a2, $s7
-	move $a3, $matriz
-	jal accessijpos
+	add t6, v0, t6
 	b comp4
-jmenos:
-	move $a0, $s1
-	move $a1, $s6
-	move $a2, $s7
-	move $a3, $matriz
+jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
+	move	a0, s1
+	move	a1, s6
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
+	add t6, v0, t6
 	b comp5
-imasjmas:
-	move $a0, $s3
-	move $a1, $s4
-	move $a2, $s7
-	move $a3, $matriz
+imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
+	move	a0, s3
+	move	a1, s4
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
+	add t6, v0, t6
 	b comp6
-imasjmenos:
-	move $a0, $s4
-	move $a1, $s6
-	move $a2, $s7
-	move $a3, $matriz
+imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
+	move	a0, s4
+	move	a1, s6
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
+	add t6, v0, t6
 	b comp7
-imenosjmas:
-	move $a0, $s4
-	move $a1, $s6
-	move $a2, $s7
-	move $a3, $matriz
+imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
+	move	a0, s4
+	move	a1, s6
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
+	add t6, v0, t6
 	b comp8
-imenosjmenos:
-	move $a0, $s5
-	move $a1, $s6
-	move $a2, $s7
-	move $a3, $matriz
+imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
+	move	a0, s5
+	move	a1, s6
+	move	a2, s7
+	move	a3, t8
 	jal accessijpos
+	add t6, v0, t6
+
 	b fin
 
 accessijpos:
@@ -134,10 +144,11 @@ accessijpos:
     lb $t6, $t5 #carga el 1 o 0 de la matriz
     li $t7, 49 # carga '1' en t7 para comparar
     beq $t6, $t7, sumaruno #igual suma uno
+    li $v0, 0
     b finaccessijpos
 finaccessijpos:
 	#falta desapilar stack 
 	jr $ra
 sumaruno:
-	addi $v0, 1
+	li $v0, 1
 	b finaccessijpos

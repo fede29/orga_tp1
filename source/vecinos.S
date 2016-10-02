@@ -14,7 +14,7 @@
 	.ent vecinos
 vecinos:
 	subu	sp, sp, 76 #creo stack
-	sw	ra,	40(sp) #guardo el ra en stack
+	sw	ra, 40(sp) #guardo el ra en stack
 	sw	$fp, 36(sp)	#guardo el fp en stack
 	sw	gp, 32(sp) #guardo el gp en stack
 	sw	s0, 44(sp) #guardo el s0 en stack

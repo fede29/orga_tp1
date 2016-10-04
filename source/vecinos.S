@@ -25,6 +25,10 @@ vecinos:
 	sw	s5, 64(sp) #guardo el s5 en stack
 	sw	s6, 68(sp) #guardo el s6 en stack
 	sw	s7, 72(sp) #guardo el s7 en stack
+	sw	a0, 0(sp) #guardo el 1er parametro N en el stack  en stack
+	sw	a1, 4(sp) #guardo el 2do parametro N en el stack  en stack
+	sw	a2, 8(sp) #guardo el 3er parametro N en el stack  en stack
+	sw	a3, 12(sp) #guardo el 4to parametro N en el stack  en stack
 	sw	t0, 16(sp) #guardo el 5to parametro N en el stack  en stack
 	move	$fp, sp #muevo el fp al inicio del stack
 	move	t1, a0 #cargo el 1er parametro a* en t1 
@@ -73,6 +77,10 @@ fin:
 	lw	s5, 64(sp) #cargo el s5 del stack
 	lw	s6, 68(sp) #cargo el s6 del stack
 	lw	s7, 72(sp) #cargo el s7 del stack
+	lw	a0, 0(sp) #cargo el s7 del stack
+	lw	a1, 4(sp) #cargo el s7 del stack
+	lw	a2, 8(sp) #cargo el s7 del stack
+	lw	a3, 12(sp) #cargo el s7 del stack
 	addiu	sp, sp, 76
 	move	v0, t6
 	jr	ra
@@ -82,7 +90,7 @@ imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a1, s2
 	move	a2, s7
 	move	a3, t8
-	jal	accessijpos
+	#jal	accessijpos
 	add	t6, v0, t6
 	b	comp2
 jmas: #se llama a a[i][j+1] para ver si esta vivo o no
@@ -90,7 +98,7 @@ jmas: #se llama a a[i][j+1] para ver si esta vivo o no
 	move	a1, s4
 	move	a2, s7
 	move	a3, t8
-	jal	accessijpos
+	#jal	accessijpos
 	add	t6, v0, t6
 	b	comp3
 imenos: #se llama a a[i-1][j] para ver si esta vivo o no
@@ -98,7 +106,7 @@ imenos: #se llama a a[i-1][j] para ver si esta vivo o no
 	move	a1, s2
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b comp4
 jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
@@ -106,7 +114,7 @@ jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b comp5
 imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
@@ -114,7 +122,7 @@ imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
 	move	a1, s4
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b comp6
 imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
@@ -122,7 +130,7 @@ imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b comp7
 imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
@@ -130,7 +138,7 @@ imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b comp8
 imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
@@ -138,7 +146,7 @@ imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	jal accessijpos
+	#jal accessijpos
 	add t6, v0, t6
 	b fin
 

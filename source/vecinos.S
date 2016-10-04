@@ -90,7 +90,7 @@ imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a1, s2
 	move	a2, s7
 	move	a3, t8
-	#jal	accessijpos
+	jal	accessijpos
 	add	t6, v0, t6
 	b	comp2
 jmas: #se llama a a[i][j+1] para ver si esta vivo o no
@@ -98,7 +98,7 @@ jmas: #se llama a a[i][j+1] para ver si esta vivo o no
 	move	a1, s4
 	move	a2, s7
 	move	a3, t8
-	#jal	accessijpos
+	jal	accessijpos
 	add	t6, v0, t6
 	b	comp3
 imenos: #se llama a a[i-1][j] para ver si esta vivo o no
@@ -106,7 +106,7 @@ imenos: #se llama a a[i-1][j] para ver si esta vivo o no
 	move	a1, s2
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b comp4
 jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
@@ -114,7 +114,7 @@ jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b comp5
 imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
@@ -122,7 +122,7 @@ imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
 	move	a1, s4
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b comp6
 imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
@@ -130,7 +130,7 @@ imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b comp7
 imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
@@ -138,7 +138,7 @@ imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b comp8
 imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
@@ -146,7 +146,7 @@ imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
-	#jal accessijpos
+	jal accessijpos
 	add t6, v0, t6
 	b fin
 
@@ -163,15 +163,16 @@ accessijpos:
 	mul	t5, t3, t2 # $t5 <-- width * i
 	add	t5, t5, t4 # $t5 <-- width * i + j
 	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
-	lb	t6, 0(t5) #carga el 1 o 0 de la matriz
+	lb	t9, 0(t5) #carga el 1 o 0 de la matriz
 	li	t7, 49 # carga '1' en t7 para comparar
-	beq	t6, t7, sumaruno #igual suma uno
+	beq	t9, t7, sumaruno #igual suma uno
 	li	v0, 0
 	b finaccessijpos
 finaccessijpos:
 	lw	ra, 24(sp) #empiezo a liberar stack, cargo el ra del stack
 	lw	$fp, 20(sp) #cargo el fp del stack
 	lw	gp, 16(sp) #cargo el gp del stack
+	addiu	sp, sp, 32
 	jr	ra
 sumaruno:
 	li	v0, 1

@@ -150,6 +150,7 @@ imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
 	add t6, v0, t6
 	b fin
 
+	.globl accessijpos
 accessijpos:
 	subu	sp, sp, 32 #creo stack
 	sw	ra,	24(sp) #guardo el ra en stack
@@ -162,7 +163,7 @@ accessijpos:
 	mul	t5, t3, t2 # $t5 <-- width * i
 	add	t5, t5, t4 # $t5 <-- width * i + j
 	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
-	lb	t6, (t5) #carga el 1 o 0 de la matriz
+	lb	t6, 0(t5) #carga el 1 o 0 de la matriz
 	li	t7, 49 # carga '1' en t7 para comparar
 	beq	t6, t7, sumaruno #igual suma uno
 	li	v0, 0

@@ -40,7 +40,7 @@ vecinos:
 	move	s0, t4 #m
 	move	s7, t0 #n
 	move	t8, t1 #matriz
-	move	t6, zero #en t6 se va a ir acumulando el valor
+	li	t6, 0 #en t6 se va a ir acumulando el valor
 	ble	s3, s0, imas #compara si i + 1 <= m 
 comp2:
 	ble	s4, s7, jmas #compara si j + 1 <= n 
@@ -76,7 +76,6 @@ fin:
 	addiu	sp, sp, 76
 	move	v0, t6
 	jr	ra
-	.end	vecinos
 
 imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a0, s3
@@ -168,3 +167,4 @@ finaccessijpos:
 sumaruno:
 	li	v0, 1
 	b	finaccessijpos
+	.end	vecinos

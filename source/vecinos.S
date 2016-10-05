@@ -29,6 +29,7 @@ vecinos:
 	sw	a1, 4(sp) #guardo el 2do parametro N en el stack  en stack
 	sw	a2, 8(sp) #guardo el 3er parametro N en el stack  en stack
 	sw	a3, 12(sp) #guardo el 4to parametro N en el stack  en stack
+	lw	t0, 92(sp) #cargo el 5to parametro N en el stack  en stack
 	sw	t0, 16(sp) #guardo el 5to parametro N en el stack  en stack
 	move	$fp, sp #muevo el fp al inicio del stack
 	move	t1, a0 #cargo el 1er parametro a* en t1 
@@ -66,8 +67,10 @@ comp8:
 	ble	s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
+	#move	v0, s7
 	lw	ra, 40(sp) #empiezo a liberar stack, cargo el ra del stack
 	lw	$fp, 36(sp) #cargo el fp del stack
+	sw	s7, 16(sp) #el param 5
 	lw	gp, 32(sp) #cargo el gp del stack
 	lw	s0, 44(sp) #cargo el s0 del stack
 	lw	s1, 48(sp) #cargo el s1 del stack
@@ -77,10 +80,11 @@ fin:
 	lw	s5, 64(sp) #cargo el s5 del stack
 	lw	s6, 68(sp) #cargo el s6 del stack
 	lw	s7, 72(sp) #cargo el s7 del stack
-	lw	a0, 0(sp) #cargo el s7 del stack
-	lw	a1, 4(sp) #cargo el s7 del stack
-	lw	a2, 8(sp) #cargo el s7 del stack
-	lw	a3, 12(sp) #cargo el s7 del stack
+	lw	a0, 0(sp) #cargo el param 1
+	lw	a1, 4(sp) #cargo el param 2
+	lw	a2, 8(sp) #cargo el param 3
+	lw	a3, 12(sp) #cargo el param 4
+
 	addiu	sp, sp, 76
 	move	v0, t6
 	jr	ra
@@ -163,18 +167,19 @@ accessijpos:
 	mul	t5, t3, t2 # $t5 <-- width * i
 	add	t5, t5, t4 # $t5 <-- width * i + j
 	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
-	lb	t9, 0(t5) #carga el 1 o 0 de la matriz
-	li	t7, 49 # carga '1' en t7 para comparar
-	beq	t9, t7, sumaruno #igual suma uno
-	li	v0, 0
-	b finaccessijpos
-finaccessijpos:
+	lb	t1, 0(t5) #carga el '1' o '0' de la matriz
+	addiu	t1, t1,-48 # carga '1' en t7 para comparar
+	#beq	t9, t7, sumaruno #igual suma uno
+	#li	v0, 0
+	move	v0, t1
+#	b finaccessijpos
+#finaccessijpos:
 	lw	ra, 24(sp) #empiezo a liberar stack, cargo el ra del stack
 	lw	$fp, 20(sp) #cargo el fp del stack
 	lw	gp, 16(sp) #cargo el gp del stack
 	addiu	sp, sp, 32
 	jr	ra
-sumaruno:
-	li	v0, 1
-	b	finaccessijpos
+#sumaruno:
+#	li	v0, 1
+#	b	finaccessijpos
 	.end	vecinos

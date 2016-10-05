@@ -46,25 +46,25 @@ vecinos:
 	move	s7, t0 #n
 	move	t8, t1 #matriz
 	li	t6, 0 #en t6 se va a ir acumulando el valor
-	ble	s3, s0, imas #compara si i + 1 <= m 
+	blt	s3, s0, imas #compara si i + 1 < m 
 comp2:
-	ble	s4, s7, jmas #compara si j + 1 <= n 
+	blt	s4, s7, jmas #compara si j + 1 < n 
 comp3:
 	bge	s5, zero, imenos #compara si i - 1 >= 0 
 comp4:
 	bge	s6, zero, jmenos #compara si j - 1 >= 0
 comp5:
 	bge	s3, s0, comp6 #compara si i + 1 >= m
-	ble	s4, s7, imasjmas #compara si j + 1 <= n
+	blt	s4, s7, imasjmas #compara si j + 1 <= n
 comp6:
 	bge	s3, s0, comp7 #compara si i + 1 >= m
 	bge	s6, zero, imasjmenos #compara si j - 1 >= 0 
 comp7:
 	blt	s5, zero, comp8 #compara si i + 1 < 0
-	ble	s4, s7, imenosjmas #compara si j + 1 <= n 
+	blt	s4, s7, imenosjmas #compara si j + 1 < n 
 comp8:
 	blt	s5, zero, fin #compara si i + 1 < 0
-	ble	s6, zero, imenosjmenos #compara si j + 1 >= 0 
+	bge	s6, zero, imenosjmenos #compara si j + 1 >= 0 
 	#falta desapilar stack
 fin:
 	#move	v0, s7
@@ -96,7 +96,7 @@ imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a3, t8
 	jal	accessijpos
 	add	t6, v0, t6
-	b	comp2
+	b	fin
 jmas: #se llama a a[i][j+1] para ver si esta vivo o no
 	move	a0, s1
 	move	a1, s4

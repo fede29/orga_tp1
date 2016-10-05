@@ -64,7 +64,7 @@ comp7:
 	blt	s4, s7, imenosjmas #compara si j + 1 < n 
 comp8:
 	blt	s5, zero, fin #compara si i + 1 < 0
-	bge	s6, zero, imenosjmenos #compara si j + 1 >= 0 
+	bge	s6, zero, imenosjmenos #compara si j - 1 >= 0 
 	#falta desapilar stack
 fin:
 	#move	v0, s7
@@ -130,7 +130,7 @@ imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
 	add t6, v0, t6
 	b comp6
 imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
-	move	a0, s4
+	move	a0, s3
 	move	a1, s6
 	move	a2, s7
 	move	a3, t8
@@ -138,8 +138,8 @@ imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
 	add t6, v0, t6
 	b comp7
 imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
-	move	a0, s4
-	move	a1, s6
+	move	a0, s5
+	move	a1, s4
 	move	a2, s7
 	move	a3, t8
 	jal accessijpos

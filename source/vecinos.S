@@ -55,7 +55,7 @@ comp4:
 	bge	s6, zero, jmenos #compara si j - 1 >= 0
 comp5:
 	bge	s3, s0, comp6 #compara si i + 1 >= m
-	blt	s4, s7, imasjmas #compara si j + 1 <= n
+	blt	s4, s7, imasjmas #compara si j + 1 < n
 comp6:
 	bge	s3, s0, comp7 #compara si i + 1 >= m
 	bge	s6, zero, imasjmenos #compara si j - 1 >= 0 
@@ -96,7 +96,7 @@ imas: #se llama a a[i+1][j] para ver si esta vivo o no
 	move	a3, t8
 	jal	accessijpos
 	add	t6, v0, t6
-	b	fin
+	b	comp2
 jmas: #se llama a a[i][j+1] para ver si esta vivo o no
 	move	a0, s1
 	move	a1, s4
@@ -167,19 +167,12 @@ accessijpos:
 	mul	t5, t3, t2 # $t5 <-- width * i
 	add	t5, t5, t4 # $t5 <-- width * i + j
 	add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
-	lb	t1, 0(t5) #carga el '1' o '0' de la matriz
+	lbu	t1, 0(t5) #carga el '1' o '0' de la matriz
 	addiu	t1, t1,-48 # carga '1' en t7 para comparar
-	#beq	t9, t7, sumaruno #igual suma uno
-	#li	v0, 0
 	move	v0, t1
-#	b finaccessijpos
-#finaccessijpos:
 	lw	ra, 24(sp) #empiezo a liberar stack, cargo el ra del stack
 	lw	$fp, 20(sp) #cargo el fp del stack
 	lw	gp, 16(sp) #cargo el gp del stack
 	addiu	sp, sp, 32
 	jr	ra
-#sumaruno:
-#	li	v0, 1
-#	b	finaccessijpos
 	.end	vecinos

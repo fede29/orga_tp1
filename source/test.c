@@ -47,7 +47,6 @@ void writePBM(unsigned char** board, unsigned int dimx, unsigned int dimy, const
 	return;
 }
 
-
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 	unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
 	unsigned int i,j;
@@ -156,6 +155,7 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 	return vecinos;
 }
 */
+
 
 unsigned int vecinos_m(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
 	unsigned int vecinos = 0;

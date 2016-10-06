@@ -221,7 +221,9 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 \subsubsection{Diagrama del Stack de Vecinos}
 
 \section{Corridas de Prueba}
-Realizamos varias corridas de prueba con los archivos proporcionados (pento, glider y sapo). Mostramos a continuación algunas salidas de las corridas:
+
+\subsection{Funcionamiento}
+Realizamos varias corridas de prueba con los archivos proporcionados (pento, glider y sapo) para verificar el correcto funcionamiento del programa. Mostramos a continuación algunas salidas de las corridas:
 
 \texttt{./conway 10 10 10 glider -s}
 
@@ -345,10 +347,81 @@ Simulation number: 2
 
 \end{lstlisting}
 
+\subsection{Resultados}
+Además medimos los tiempos de ejecucion para el programa compilado enteramente en c y el compilado con la función vecinos en mips. A continuación se muestran los resultados\footnote{Todos los tiempos están medidos en segundos.}:
 
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|c|c|}
+		\hline
+		\textbf{input}&\textbf{it}&\textbf{M}&\textbf{N} &\textbf{time 1}&\textbf{time 2}&\textbf{time 3}\\
+		\hline
+		pento &	10	&10	&10	&0,098	&0,117	&0,102\\
+		      & 100	&10	&10	&0,848	&0,836	&0,816\\
+		      & 10	&20	&20	&0,832	&0,781	&0,750\\
+		\hline
+		glider& 10	&10	&10	&0,102	&0,102	&0,102\\
+		      & 100	&10	&10	&0,836	&0,836	&0,785\\
+		      & 10	&20	&20	&0,766	&0,77	&0,746\\
+		\hline
+		sapo  &	10	&10	&10	&0,102	&0,117	&0,102\\
+		      & 100	&10	&10	&0,848	&0,836	&0,816\\
+		      & 10	&20	&20	&0,73	&0,766	&0,750\\
+		\hline
+	\end{tabular}
+	\caption{Tiempo de ejecución del programa compilado enteramente C}
+	\label{tab:t_c}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|c|c|}
+		\hline
+		\textbf{input}&\textbf{it}&\textbf{M}&\textbf{N} &\textbf{time 1}&\textbf{time 2}&\textbf{time 3}\\
+		\hline
+		pento	&10	 &10	&10 &0,098	&0,098	&0,102\\
+				&100 &10	&10 &0,797	&0,801	&0,77\\
+				&10	 &20	&20 &0,746	&0,77	&0,801\\
+				\hline
+		glider	&10	 &10	&10 &0,102	&0,098	&0,082\\
+				&100 &10	&10	&0,816	&0,801	&0,781\\
+				&10	 &20	&20	&0,77	&0,73	&0,75\\
+				\hline
+		sapo	&10	 &10	&10	&0,098	&0,102	&0,098\\
+				&100 &10	&10	&0,801	&0,77	&0,77\\
+				&10	 &20	&20	&0,785	&0,766	&0,77\\
+		\hline
+	\end{tabular}
+	\caption{Tiempo de ejecución del programa compilado con la función vecinos en mips}
+	\label{tab:t_mips}
+\end{table}
+
+Para tener una mejor noción sobre los tiempos a continuación se muestra el promedio. El promedio se calculo sin considerar el tipo de archivo de input, es decir considerando los todos los tiempos pertenecientes a las ejecuciones con los mismos parámetros i M y N.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|c|c|}
+	\hline
+	\textbf{Parámetros}&\textbf{Tiempo (C)}&\textbf{ Tiempo (Mips)}\\
+	\hline
+	10 10x10 &	0,1048&	0,0975\\
+	\hline
+	100 10x10&	0,8285&	0,7896\\
+	\hline
+	10 20x20 &	0,7656&	0,7653\\		
+	\hline
+	\end{tabular}
+	\caption{Promedio de los tiempos de ejecución}
+	\label{tab:prom}
+\end{table}
+
+\subsection{Análisis de Resultados}
+Observando las tablas podemos ver claramente que hay una tendencia a disminuir el tiempo de ejecucion utilizando el programa compilado en mips. Esto se ve especialmente analizando la tabla \ref{tab:prom}. Donde claramente el promedio en todos los casos es menor en mips que en C.
 
 \section{Conclusiones}
+Además de familiarizarnos con las herramientas y el set de instrucciones de Mips pudimos observar como programando una función en mips podemos reducir el costo de tiempo en la ejecucion de un programa.
 
+A la vista de los resultados, la ganancia es muy pequeña. Podemos deducir que se trata debido a que el programa en sí consta de otras partes que tienen mucha injerencia en el costo de tiempo del programa (como puede ser la creación de archivos pbm). 
 
 \appendix
 \part*{Apéndice}

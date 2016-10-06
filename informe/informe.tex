@@ -103,18 +103,15 @@ La implementación se realizo en el lenguaje de programacion C. Además se desar
 
 El programa fue desarrollado para correr sobre una plataforma \emph{NetBSD / MIPS-32} mediante el emulador \emph{GXEmul}.
 
-
-
 \section{Utilización}
 El programa fue implementado para que cumpliera con los requisitos pedidos por el tp.
 En las siguientes secciones se detallarán los diferentes aspectos para la ejecución del programa.
 
 \subsection{Compilación y Ejecución}
 \begin{enumerate}
-	\item Descargar el archivo fuente ``conway.c"
-	\item Compilar el archivo (por ejemplo con gcc:\\
-	\texttt{gcc -Wall -c  ``conway.c''\\
-	gcc -Wall -o ``conway'' ``conway.c''})
+	\item Descargar el archivo Conway.zip desde el repositorio\footnote{https://github.com/fede29/orga\_tp1}.\\
+	\item Descomprimir en el directorio que desee.
+	\item Desde el directorio donde se descomprimieron los archivos, ejecutar \texttt{make} para generar el código enteramente en C o \texttt{make mips} para generar el código con la función vecinos en Mips.
 	\item Ejecutar el programa con: \texttt{./conway i M N input [-o output]}
 \end{enumerate}
 
@@ -169,8 +166,6 @@ Para generar un tablero de $20 \times 30$ a partir del archivo \texttt{pento}, r
 
 Los archivos pbm generados por el comando anterior seran nombrados de la forma: ``jorge\_N.pbm''.
 
-
-
 \section{Implementación}
 En esta sección se presentar porciones del programa. Para ver el código completo dirigirse al apéndice A.
 
@@ -217,6 +212,8 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned 
 \end{lstlisting}
 
 \subsection{Implementación en MIPS}
+
+Para ver el código fuente dirigirse a la sección A.2.
 
 \subsubsection{Diagrama del Stack de Vecinos}
 
@@ -350,7 +347,7 @@ Simulation number: 2
 \subsection{Resultados}
 Además medimos los tiempos de ejecucion para el programa compilado enteramente en c y el compilado con la función vecinos en mips. A continuación se muestran los resultados\footnote{Todos los tiempos están medidos en segundos.}:
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\begin{tabular}{|l|c|c|c|c|c|c|}
 		\hline
@@ -373,7 +370,7 @@ Además medimos los tiempos de ejecucion para el programa compilado enteramente 
 	\label{tab:t_c}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\begin{tabular}{|l|c|c|c|c|c|c|}
 		\hline
@@ -398,7 +395,7 @@ Además medimos los tiempos de ejecucion para el programa compilado enteramente 
 
 Para tener una mejor noción sobre los tiempos a continuación se muestra el promedio. El promedio se calculo sin considerar el tipo de archivo de input, es decir considerando los todos los tiempos pertenecientes a las ejecuciones con los mismos parámetros i M y N.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\begin{tabular}{|l|c|c|c|c|c|c|}
 	\hline
@@ -421,12 +418,15 @@ Observando las tablas podemos ver claramente que hay una tendencia a disminuir e
 \section{Conclusiones}
 Además de familiarizarnos con las herramientas y el set de instrucciones de Mips pudimos observar como programando una función en mips podemos reducir el costo de tiempo en la ejecucion de un programa.
 
-A la vista de los resultados, la ganancia es muy pequeña. Podemos deducir que se trata debido a que el programa en sí consta de otras partes que tienen mucha injerencia en el costo de tiempo del programa (como puede ser la creación de archivos pbm). 
+A la vista de los resultados, la ganancia es muy pequeña. Podemos deducir que se trata debido a que el programa en sí consta de otras partes que tienen mucha injerencia en el costo de tiempo del programa (como puede ser la creación de archivos pbm).
+
+Vale aclarar también que la complejidad de programar una función en Mips es mucho mayor que la de programar una función en C. Mas allá del hecho de que estamos aprendiendo a programar en Mips, podemos notar la mayor cantidad de lineas que tiene el código de la función vecinos.s. Esta claro que para lograr un mismo resultado (con funcionalidades no tan pequeñas) en código assembler que en C es necesario programar mucho más.
 
 \appendix
 \part*{Apéndice}
 \section{Código Fuente}
 
+\subsection{Programa Principal en C}
 \begin{lstlisting}[caption={cornway.c},label={lst:codigoc}]
 #include <stdlib.h>
 #include <stdio.h>
@@ -477,7 +477,6 @@ fprintf(fp, "%c", writeValue);
 return;
 }
 
-
 unsigned char ** init_board(unsigned int rows, unsigned int cols){
 unsigned char** board = (unsigned char**)malloc(cols*sizeof(char*));
 unsigned int i,j;
@@ -490,7 +489,6 @@ board[i][j]='0';
 return board;
 }
 
-
 void load_board(unsigned char **board, unsigned int rows, unsigned int cols, FILE *file){
 int x,y;
 while (fscanf (file, "%i %i", &x, &y)!=EOF){
@@ -500,7 +498,6 @@ board[x][y]='1';
 }
 }
 
-
 int free_board (unsigned char **board, unsigned int rows, unsigned int cols){
 unsigned int i;
 for (i = 0; i<cols; i++){
@@ -509,7 +506,6 @@ free(board[i]);
 free(board);
 return 0;
 }
-
 
 void print_board(unsigned char **board, unsigned int rows, unsigned int cols){
 unsigned int i,j;
@@ -556,7 +552,6 @@ fprintf(file,"\n");
 fclose(file);
 }
 
-
 unsigned char* board_to_array(unsigned char ** board, unsigned int rows, unsigned int cols){
 unsigned char* array = (unsigned char*)malloc(sizeof(char*)*rows*cols);
 int x,y;
@@ -569,39 +564,6 @@ array[pos]=board[x][y];
 return array;
 }
 
-
-unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
-unsigned int vecinos = 0;
-int x,y;
-for (x = -1; x<2; x++){
-for (y = -1; y<2; y++){
-if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
-if ((!(x==0&&y==0)) && a[N*(x+i) + (y+j)] == '1'){
-vecinos++;
-}
-}
-}
-}
-return vecinos;
-}
-
-
-unsigned int vecinos_m(unsigned char **board, unsigned int x, unsigned int y, unsigned int rows, unsigned int cols){
-unsigned int vecinos = 0;
-int i,j;
-for (i = -1; i<2; i++){
-for (j = -1; j<2; j++){
-if (x+i>=0 && x+i<cols && y+j>=0 && y+j<rows){
-if ((!(i==0&&j==0)) && board[x+i][y+j] == '1'){
-vecinos++;
-}
-}
-}
-}
-return vecinos;
-}
-
-
 void copy_board(unsigned char **from, unsigned char **to, unsigned int rows, unsigned int cols){
 unsigned int i,j;
 for (i = 0; i<cols; i++){
@@ -610,7 +572,6 @@ to[i][j] = from[i][j];
 }
 }
 }
-
 
 void process_board(unsigned char **board, unsigned int rows, unsigned int cols, unsigned int actionCount,const char* fileName,bool screen){
 printf ("starting action\n");
@@ -631,7 +592,6 @@ for (y = 0; y < rows; y++){
 unsigned char * array = board_to_array(thisBoard, rows, cols);
 unsigned int neighbours = vecinos(array, x, y, rows, cols);
 free(array);
-//unsigned int neighbours = vecinos_m(thisBoard,x,y,rows,cols);
 if (thisBoard[x][y]=='1'){
 if (neighbours == 3 || neighbours == 2){nextBoard[x][y] = '1';}
 }else{
@@ -644,7 +604,6 @@ free_board(nextBoard, rows, cols);
 }
 free_board(thisBoard, rows, cols);
 }
-
 
 void print_help(){
 printf("Uso:\n");
@@ -662,11 +621,9 @@ printf("  si no se da un prefijo para el archivo de salida, \n");
 printf("  el prefijo será el nombre del archivo de entrada.\n");
 }
 
-
 void print_version (){
 printf("Conway -Game of Life- version: 1.0\n");
 }
-
 
 void validate_actionsCount(int actionsCount){
 if (actionsCount <= 0){
@@ -675,7 +632,6 @@ exit(1);
 }
 }
 
-
 void validate_rows(int rows){
 if (rows <= 0){
 fprintf(stderr, "Number of rows must be a positive integer!\n");
@@ -683,14 +639,12 @@ exit(1);
 }
 }
 
-
 void validate_cols(int cols){
 if (cols <= 0){
 fprintf(stderr, "Number of columns must be a positive integer!\n");
 exit(1);
 }
 }
-
 
 int main(int argc, char* argv[])
 {
@@ -701,7 +655,7 @@ unsigned int rows;
 unsigned int cols;
 unsigned char **board;
 bool screen = 0;
-//asigno valores de parametros
+
 if (argc == 2){
 char* arg = argv[1];
 if (strcmp(arg,"-h") == 0 || strcmp(arg,"--help") == 0){
@@ -744,7 +698,6 @@ fprintf(stderr,"Invalid parameter!\n");
 exit(1);
 }
 }
-
 }
 
 FILE* file = fopen(fileName, "r");
@@ -761,7 +714,215 @@ free_board(board, rows, cols);
 
 return 0;
 }
-
 \end{lstlisting}
+
+\subsection{Función Vecinos en Mips}
+
+\begin{lstlisting}[caption={vecinos.s},label={lst:codigoc}]
+include <mips/regdef.h>
+#include <sys/syscall.h>
+
+######################################################################################
+# Empieza el codigo...
+# los nombres de los registros estan mal es para ubicarlos facil y despues cambiarlos
+# la cosa es asi las 8 comparaciones i +/- j +/- si pasa entra a la funcion donde se accede
+# a i j de la matriz y verifica que sea igual a 1 devuelve 1 sino 0, falta allocar bien los stack
+# de la principal y de la funcion
+######################################################################################
+.text
+.align 2
+.globl vecinos
+.ent vecinos
+vecinos:
+subu	sp, sp, 76 #creo stack
+sw	ra, 40(sp) #guardo el ra en stack
+sw	$fp, 36(sp)	#guardo el fp en stack
+sw	gp, 32(sp) #guardo el gp en stack
+sw	s0, 44(sp) #guardo el s0 en stack
+sw	s1, 48(sp) #guardo el s1 en stack
+sw	s2, 52(sp) #guardo el s2 en stack
+sw	s3, 56(sp) #guardo el s3 en stack
+sw	s4, 60(sp) #guardo el s4 en stack
+sw	s5, 64(sp) #guardo el s5 en stack
+sw	s6, 68(sp) #guardo el s6 en stack
+sw	s7, 72(sp) #guardo el s7 en stack
+sw	a0, 0(sp) #guardo el 1er parametro N en el stack  en stack
+sw	a1, 4(sp) #guardo el 2do parametro N en el stack  en stack
+sw	a2, 8(sp) #guardo el 3er parametro N en el stack  en stack
+sw	a3, 12(sp) #guardo el 4to parametro N en el stack  en stack
+lw	t0, 92(sp) #cargo el 5to parametro N en el stack  en stack
+sw	t0, 16(sp) #guardo el 5to parametro N en el stack  en stack
+move	$fp, sp #muevo el fp al inicio del stack
+move	t1, a0 #cargo el 1er parametro a* en t1 
+move	t2, a1 #cargo el 2do parametro i en t2
+move	t3, a2 #cargo el 3er parametro j en t3
+move	t4, a3 #cargo el 4tp parametro M en t4
+move	s1, t2 #i
+move	s2, t3 #j
+addi	s3, s1, 1 #imasuno
+addi	s4, s2, 1 #jmasuno
+addi	s5, s1, -1	#imenosuno
+addi	s6, s2, -1 #jmenosuno
+move	s0, t4 #m
+move	s7, t0 #n
+move	t8, t1 #matriz
+li	t6, 0 #en t6 se va a ir acumulando el valor
+blt	s3, s0, imas #compara si i + 1 < m 
+comp2:
+blt	s4, s7, jmas #compara si j + 1 < n 
+comp3:
+bge	s5, zero, imenos #compara si i - 1 >= 0 
+comp4:
+bge	s6, zero, jmenos #compara si j - 1 >= 0
+comp5:
+bge	s3, s0, comp6 #compara si i + 1 >= m
+blt	s4, s7, imasjmas #compara si j + 1 < n
+comp6:
+bge	s3, s0, comp7 #compara si i + 1 >= m
+bge	s6, zero, imasjmenos #compara si j - 1 >= 0 
+comp7:
+blt	s5, zero, comp8 #compara si i + 1 < 0
+blt	s4, s7, imenosjmas #compara si j + 1 < n 
+comp8:
+blt	s5, zero, fin #compara si i + 1 < 0
+bge	s6, zero, imenosjmenos #compara si j - 1 >= 0 
+#falta desapilar stack
+fin:
+#move	v0, s7
+lw	ra, 40(sp) #empiezo a liberar stack, cargo el ra del stack
+lw	$fp, 36(sp) #cargo el fp del stack
+sw	s7, 16(sp) #el param 5
+lw	gp, 32(sp) #cargo el gp del stack
+lw	s0, 44(sp) #cargo el s0 del stack
+lw	s1, 48(sp) #cargo el s1 del stack
+lw	s2, 52(sp) #cargo el s2 del stack
+lw	s3, 56(sp) #cargo el s3 del stack
+lw	s4, 60(sp) #cargo el s4 del stack
+lw	s5, 64(sp) #cargo el s5 del stack
+lw	s6, 68(sp) #cargo el s6 del stack
+lw	s7, 72(sp) #cargo el s7 del stack
+lw	a0, 0(sp) #cargo el param 1
+lw	a1, 4(sp) #cargo el param 2
+lw	a2, 8(sp) #cargo el param 3
+lw	a3, 12(sp) #cargo el param 4
+
+addiu	sp, sp, 76
+move	v0, t6
+jr	ra
+
+imas: #se llama a a[i+1][j] para ver si esta vivo o no
+move	a0, s3
+move	a1, s2
+move	a2, s7
+move	a3, t8
+jal	accessijpos
+add	t6, v0, t6
+b	comp2
+jmas: #se llama a a[i][j+1] para ver si esta vivo o no
+move	a0, s1
+move	a1, s4
+move	a2, s7
+move	a3, t8
+jal	accessijpos
+add	t6, v0, t6
+b	comp3
+imenos: #se llama a a[i-1][j] para ver si esta vivo o no
+move	a0, s5
+move	a1, s2
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b comp4
+jmenos: #se llama a a[i][j-1] para ver si esta vivo o no
+move	a0, s1
+move	a1, s6
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b comp5
+imasjmas: #se llama a a[i+1][j+1] para ver si esta vivo o no
+move	a0, s3
+move	a1, s4
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b comp6
+imasjmenos: #se llama a a[i+1][j-1] para ver si esta vivo o no
+move	a0, s3
+move	a1, s6
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b comp7
+imenosjmas: #se llama a a[i-1][j+1] para ver si esta vivo o no
+move	a0, s5
+move	a1, s4
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b comp8
+imenosjmenos: #se llama a a[i-1][j-1] para ver si esta vivo o no
+move	a0, s5
+move	a1, s6
+move	a2, s7
+move	a3, t8
+jal accessijpos
+add t6, v0, t6
+b fin
+
+.globl accessijpos
+accessijpos:
+subu	sp, sp, 32 #creo stack
+sw	ra,	24(sp) #guardo el ra en stack
+sw	$fp, 20(sp)	#guardo el fp en stack
+sw	gp, 16(sp) #guardo el gp en stack
+move	t2, a0 # pos i
+move	t4, a1 # pos j
+move	t3, a2 # n de la matriz
+move	t0, a3 # pos 0,0 de la matriz
+mul	t5, t3, t2 # $t5 <-- width * i
+add	t5, t5, t4 # $t5 <-- width * i + j
+add	t5, t0, t5 # $t5 <-- base address + (2^2 * (width * i + j))
+lbu	t1, 0(t5) #carga el '1' o '0' de la matriz
+addiu	t1, t1,-48 # carga '1' en t7 para comparar
+move	v0, t1
+lw	ra, 24(sp) #empiezo a liberar stack, cargo el ra del stack
+lw	$fp, 20(sp) #cargo el fp del stack
+lw	gp, 16(sp) #cargo el gp del stack
+addiu	sp, sp, 32
+jr	ra
+.end	vecinos
+\end{lstlisting}
+
+\subsection{Función Vecinos en C}
+
+\begin{lstlisting}[caption={vecinos.c},label={lst:codigoc}]
+unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N){
+	unsigned int vecinos = 0;
+	int x,y;
+	for (x = -1; x<2; x++){
+		for (y = -1; y<2; y++){
+			if (x+i>=0 && x+i<N && y+j>=0 && y+j<M){
+				if ((!(x==0&&y==0)) && a[N*(x+i) + (y+j)] == '1'){
+					vecinos++;
+				}
+			}
+		}
+	}
+	return vecinos;
+}
+\end{lstlisting}
+
+\section{Dirección del Repositorio}
+
+Todos los archivos correspondientes al trabajo practico se encuentran en este repositorio:
+
+	https://github.com/fede29/orga\_tp1
+	
 
 \end{document}
